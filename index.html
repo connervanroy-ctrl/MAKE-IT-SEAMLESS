@@ -104,9 +104,9 @@ img{display:block}
 @keyframes streep{to{background-position:73.5px 0}}
 
 /* pagina 5: resultaat */
-.foto{position:absolute;left:481px;top:288px;width:485px;height:754px;background:#e9e9e9;overflow:hidden}
+.foto{position:absolute;left:539px;top:252px;width:371px;height:576px;background:#e9e9e9;overflow:hidden}
 .foto img{width:100%;height:100%;object-fit:cover}
-.meet{position:absolute;inset:0;width:1512px;height:1247px;pointer-events:none}
+.meet{position:absolute;inset:0;width:1512px;height:982px;pointer-events:none}
 .meet .ml{stroke:var(--rood);stroke-width:4;fill:none;stroke-dasharray:12 9;animation:mars 1.6s linear infinite}
 .meet .ld{stroke:var(--rood);stroke-width:4;fill:none}
 .meet .draw{stroke-dashoffset:var(--len);animation:teken .9s ease-out forwards;animation-delay:var(--dl)}
@@ -117,8 +117,8 @@ img{display:block}
 .num span{outline:none;border-bottom:1px dotted transparent;min-width:1ch;display:inline-block;cursor:text}
 .num span:hover,.num span:focus{border-bottom-color:var(--zw)}
 @keyframes verschijn{to{opacity:1}}
-.seamp{left:1265px;top:147px;width:159px;height:159px}
-.remp{left:1113px;top:24px;width:159px;height:159px}
+.seamp{left:1289px;top:192px;width:159px;height:159px}
+.remp{left:1149px;top:60px;width:159px;height:159px}
 .swap .h{position:absolute;inset:0;opacity:0;transition:opacity .2s}
 .swap .naad{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .2s}
 .swap .naad circle{fill:none;stroke:var(--wit);stroke-width:9;stroke-dasharray:22 15;transform-origin:250px 250px;animation:draai 9s linear infinite;animation-play-state:paused}
@@ -213,10 +213,10 @@ img{display:block}
     <div class="bar"><div class="fill" id="fill"></div></div>
   </div></section>
 
-  <section class="page" id="pResult" data-k="w" hidden><div class="stage lang">
+  <section class="page fit" id="pResult" data-k="fit" hidden><div class="stage">
     <div class="mm desk-mm" data-home>M<i>M</i></div>
     <div class="foto"><img id="rImg" alt="Jouw foto"></div>
-    <svg class="meet" id="meet" viewBox="0 0 1512 1247"></svg>
+    <svg class="meet" id="meet" viewBox="0 0 1512 982"></svg>
     <div id="labels"></div>
     <button class="patch swap remp" id="remeasure" aria-label="Remeasure">
       <img src="remeasure.png" alt=""><img class="h" src="remeasure-h.png" alt="">
@@ -790,13 +790,13 @@ function startDesk(){
     jas:["arm","schouder","borst","heup"],jurk:["arm","schouder","borst","heup"],top:["arm","schouder","borst"],cape:["schouder","borst"],
     schort:["borst","heup"],kraag:["schouder"],mouw:["arm"],lijf:["borst","heup"],das:["schouder"],doek:["schouder"],klein:["heup"]};
   const LABELS=[
-    {k:"arm",t:"Armlengte",y:326,side:"L"},
-    {k:"borst",t:"Borstomtrek",y:526,side:"L"},
-    {k:"schouder",t:"Schouderbreedte",y:335,side:"R"},
-    {k:"heup",t:"Heupomtrek",y:521,side:"R"},
-    {k:"been",t:"Beenlengte",y:922,side:"R"}];
+    {k:"arm",t:"Armlengte",y:284,side:"L"},
+    {k:"borst",t:"Borstomtrek",y:455,side:"L"},
+    {k:"schouder",t:"Schouderbreedte",y:282,side:"R"},
+    {k:"heup",t:"Heupomtrek",y:402,side:"R"},
+    {k:"been",t:"Beenlengte",y:736,side:"R"}];
   function drawMeasures(){
-    const g=meting.geo,X=v=>481+v*485,Y=v=>288+v*754,P=q=>[X(q[0]),Y(q[1])];
+    const g=meting.geo,X=v=>539+v*371,Y=v=>252+v*576,P=q=>[X(q[0]),Y(q[1])];
     const need=NODIG[soort(COLL[item].n)]||["arm","schouder","borst","heup","been"];
     const lines={
       schouder:[[X(g.sh[0]),Y(g.sh[2])],[X(g.sh[1]),Y(g.sh[2])]],
@@ -813,12 +813,12 @@ function startDesk(){
       const dl=(.3+n*.35).toFixed(2)+"s",dl2=(.6+n*.35).toFixed(2)+"s",ln=lines[L.k];
       const le=$("labels").querySelector(`[data-l="${L.k}"]`),ne=$("labels").querySelector(`[data-n="${L.k}"]`);
       const lw=le.offsetWidth,nw=Math.max(ne.offsetWidth,52),GAP=26;
-      if(L.side==="L"){const lx=450-lw;le.style.left=lx+"px";ne.style.left=(lx-GAP-nw)+"px"}
-      else{const lx=998;le.style.left=lx+"px";ne.style.left=(lx+lw+GAP)+"px"}
+      if(L.side==="L"){const lx=508-lw;le.style.left=lx+"px";ne.style.left=(lx-GAP-nw)+"px"}
+      else{const lx=941;le.style.left=lx+"px";ne.style.left=(lx+lw+GAP)+"px"}
       [le,ne].forEach(e=>e.style.setProperty("--dl",dl2));
       if(ln)svg+=`<path class="ml" d="M${ln.map(q=>q[0].toFixed(1)+" "+q[1].toFixed(1)).join(" L")}" style="opacity:0;animation:verschijn .5s ${dl} forwards,mars 1.6s linear infinite"/>`;
       const uy=L.y+21,t=tgt[L.k];
-      const pts=L.side==="L"?[[450-lw-GAP-nw,uy],[460,uy]]:[[998+lw+GAP+nw,uy],[988,uy]];
+      const pts=L.side==="L"?[[508-lw-GAP-nw,uy],[518,uy]]:[[941+lw+GAP+nw,uy],[931,uy]];
       if(t)pts.push(t);
       const d="M"+pts.map(q=>q[0].toFixed(1)+" "+q[1].toFixed(1)).join(" L");
       let len=0;for(let i=1;i<pts.length;i++)len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
