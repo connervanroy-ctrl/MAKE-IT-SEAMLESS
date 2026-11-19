@@ -47,6 +47,7 @@ img{display:block}
 .balk{position:fixed;left:0;top:0;width:100%;height:38px;background:var(--wit);box-shadow:6px 4px 4px rgba(255,0,0,.25);overflow:hidden;z-index:30;display:flex;align-items:center}
 .balk .loop{display:flex;white-space:nowrap;animation:loopt 26s linear infinite}
 .balk span{font-family:var(--fine);font-weight:700;font-size:24px;line-height:1;color:var(--rood);padding-right:140px}
+.balk.zwart{background:var(--zw)}
 @keyframes loopt{to{transform:translateX(-50%)}}
 .grid{display:grid;grid-template-columns:repeat(7,184px);column-gap:21px;row-gap:34px;width:1414px;margin-left:43px}
 .tile{position:relative;width:184px;height:195px;display:block;text-align:center}
@@ -186,7 +187,7 @@ img{display:block}
   </div></section>
 
   <section class="page" id="pGrid" data-k="w" hidden><div class="stage">
-    <div class="balk" aria-label="Druk op de spreekknop op je telefoon om te kunnen filteren."><div class="loop"><span>DRUK OP DE SPREEK KNOP OP JE TELEFOON OM TE KUNNEN FILTEREN.</span><span aria-hidden="true">DRUK OP DE SPREEK KNOP OP JE TELEFOON OM TE KUNNEN FILTEREN.</span></div></div>
+    <div class="balk" aria-label="Druk op de spreekknop op je telefoon"><div class="loop"><span>DRUK OP DE SPREEKKNOP OP JE TELEFOON</span><span aria-hidden="true">DRUK OP DE SPREEKKNOP OP JE TELEFOON</span><span aria-hidden="true">DRUK OP DE SPREEKKNOP OP JE TELEFOON</span><span aria-hidden="true">DRUK OP DE SPREEKKNOP OP JE TELEFOON</span></div></div>
     <div class="mm desk-mm" data-home>M<i>M</i></div>
     <div class="grid" id="grid"></div>
   </div></section>
@@ -205,6 +206,7 @@ img{display:block}
 
   <section class="page fit dark" id="pLoad" data-k="fit" hidden><div class="stage">
     <div class="mm desk-mm" data-home>M<i>M</i></div>
+    <div class="balk zwart" aria-label="Kijk naar je telefoon voor de volgende stap"><div class="loop"><span>KIJK NAAR JE TELEFOON VOOR DE VOLGENDE STAP</span><span aria-hidden="true">KIJK NAAR JE TELEFOON VOOR DE VOLGENDE STAP</span><span aria-hidden="true">KIJK NAAR JE TELEFOON VOOR DE VOLGENDE STAP</span><span aria-hidden="true">KIJK NAAR JE TELEFOON VOOR DE VOLGENDE STAP</span></div></div>
     <div class="pct" id="pct">0%</div>
     <div class="bar"><div class="fill" id="fill"></div></div>
   </div></section>
