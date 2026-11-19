@@ -651,7 +651,7 @@ const GELUID=(()=>{
     if(fadeNa){const t=ctx.currentTime+fadeNa;g.gain.setValueAtTime(vol,t);g.gain.linearRampToValueAtTime(0,t+fade);s.stop(t+fade+.05)}
     return{stop(f=.25){try{const t=ctx.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+f);s.stop(t+f+.05)}catch(e){}}}}
   let lastKlik=0;
-  function klik(){const n=performance.now();if(n-lastKlik<70)return;lastKlik=n;speel("klik",{vol:.48})}
+  function klik(){const n=performance.now();if(n-lastKlik<70)return;lastKlik=n;speel("klik",{vol:.25})}
   /* laadgeluid dat flikkert: loopt rond en wordt willekeurig aan- en uitgezet, zoals de foto's van kleur naar grijs gaan */
   let fl=null;
   function flikker(aan){
