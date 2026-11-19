@@ -19,6 +19,9 @@ img{display:block}
 /* ---------- logo ---------- */
 .mm{position:absolute;font-family:var(--fine);font-weight:700;line-height:1;letter-spacing:-.02em;color:var(--zw);cursor:pointer;user-select:none;z-index:20}
 .mm i{font-style:normal;color:var(--rood)}
+/* desk: beide M's zwart (wit op zwart), bij hover wordt de rechtse M rood */
+.desk-mm i{color:inherit;transition:color .3s ease-out}
+.desk-mm:hover i{color:var(--rood)}
 .dark .mm{color:var(--wit)}
 
 /* ================= DESK ================= */
@@ -36,11 +39,15 @@ img{display:block}
 .fit .stage{overflow:visible}
 .ring figure{position:absolute;margin:0;width:236px;height:236px;display:flex;align-items:center;justify-content:center;will-change:transform}
 .ring img{max-width:100%;max-height:100%;object-fit:contain}
-.qr{position:absolute;left:588px;top:453px;width:407px;height:434px;display:flex;align-items:center;justify-content:center;background:var(--wit);z-index:3}
+.qr{position:absolute;left:552px;top:453px;width:407px;height:434px;display:flex;align-items:center;justify-content:center;background:var(--wit);z-index:3}
 .qr svg{width:380px;height:380px;display:block}
 
 /* pagina 2: raster */
 #pGrid .stage{height:auto;min-height:982px;overflow:visible;padding:298px 0 140px}
+.balk{position:fixed;left:0;top:0;width:100%;height:62px;background:var(--grijs);box-shadow:6px 4px 4px rgba(255,0,0,.25);overflow:hidden;z-index:30;display:flex;align-items:center}
+.balk .loop{display:flex;white-space:nowrap;animation:loopt 26s linear infinite}
+.balk span{font-family:var(--fine);font-weight:700;font-size:24px;line-height:1;padding-right:140px}
+@keyframes loopt{to{transform:translateX(-50%)}}
 .grid{display:grid;grid-template-columns:repeat(7,184px);column-gap:21px;row-gap:34px;width:1414px;margin-left:43px}
 .tile{position:relative;width:184px;height:195px;display:block;text-align:center}
 .tile .ph{width:184px;height:181px;display:flex;align-items:center;justify-content:center}
@@ -165,7 +172,7 @@ img{display:block}
 .silh path,.silh circle{fill:none;stroke:var(--wit);stroke-width:3;stroke-dasharray:10 8;vector-effect:non-scaling-stroke;transition:stroke .3s}
 .silh.ok path,.silh.ok circle{stroke:var(--rood)}
 .tel{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font-family:var(--tw);font-size:96px;color:var(--wit);text-shadow:0 2px 12px rgba(0,0,0,.4)}
-@media (prefers-reduced-motion:reduce){.ring figure{transition:none}.bar .fill,.meet .ml{animation:none}}
+@media (prefers-reduced-motion:reduce){.balk .loop{animation-duration:60s}.ring figure{transition:none}.bar .fill,.meet .ml{animation:none}}
 </style>
 </head>
 <body>
@@ -179,6 +186,7 @@ img{display:block}
   </div></section>
 
   <section class="page" id="pGrid" data-k="w" hidden><div class="stage">
+    <div class="balk" aria-label="Druk op de spreekknop op je telefoon om te kunnen filteren."><div class="loop"><span>DRUK OP DE SPREEK KNOP OP JE TELEFOON OM TE KUNNEN FILTEREN.</span><span aria-hidden="true">DRUK OP DE SPREEK KNOP OP JE TELEFOON OM TE KUNNEN FILTEREN.</span></div></div>
     <div class="mm desk-mm" data-home>M<i>M</i></div>
     <div class="grid" id="grid"></div>
   </div></section>
@@ -238,7 +246,7 @@ img{display:block}
   <section class="fp dark" id="fLen" hidden>
     <div class="mm ph-mm">M<i>M</i></div>
     <form class="len" id="lenForm" autocomplete="off">
-      <label for="lenIn">Vul je lengte</label>
+      <label for="lenIn">Vul je lengte in CM</label>
       <input id="lenIn" type="text" inputmode="decimal" enterkeyhint="done" maxlength="5">
     </form>
   </section>
@@ -664,7 +672,7 @@ function startDesk(){
   const figs=[...$("ring").children];let ringRaf=0,ringT0=performance.now();
   function ringStep(t){
     const a0=(t-ringT0)/1000*(2*Math.PI/160);/* één toer per 160 s */
-    figs.forEach((f,i)=>{const a=a0+i*2*Math.PI/figs.length-Math.PI/2;const x=791+Math.cos(a)*640-118,y=700+Math.sin(a)*520-118;f.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`});
+    figs.forEach((f,i)=>{const a=a0+i*2*Math.PI/figs.length-Math.PI/2;const x=756+Math.cos(a)*560-118,y=670+Math.sin(a)*560-118;f.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`});
     ringRaf=requestAnimationFrame(ringStep);
   }
   function startRing(){cancelAnimationFrame(ringRaf);ringRaf=requestAnimationFrame(ringStep)}
