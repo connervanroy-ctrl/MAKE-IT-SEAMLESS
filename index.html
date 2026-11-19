@@ -634,7 +634,7 @@ function loadPacks(onPack){
 
 /* Geluiden op de desk (Web Audio: kort en zonder vertraging) */
 const GELUID=(()=>{
-  let ctx=null;const buf={},src={klik:"klikker.mp3",meet:"meetlint.mp3",naai:"naaimachine.mp3",laden:"laden.mp3"};
+  let ctx=null;const buf={},src={klik:"klikker.mp3"};
   let klaarRes;const klaar=new Promise(r=>klaarRes=r);
   function init(){if(ctx)return;try{ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){klaarRes();return}
     Promise.all(Object.entries(src).map(([k,u])=>fetch(u).then(r=>r.arrayBuffer()).then(a=>ctx.decodeAudioData(a)).then(b=>buf[k]=b).catch(()=>{}))).then(klaarRes)}
@@ -680,7 +680,6 @@ function startDesk(){
   }
   addEventListener("resize",scale);
   function show(p,opts={}){
-    if(p!=="grid")GELUID.flikker(false);
     if(p!=="load")stopLoader();
     page=p;Object.entries(pages).forEach(([k,id])=>$(id).hidden=k!==p);
     scale();
@@ -810,8 +809,8 @@ function startDesk(){
       s.addEventListener("blur",()=>{const v=parseFloat(s.textContent.replace(",","."));if(isFinite(v)&&v>5&&v<250)M[s.dataset.k]=v;s.textContent=fmt(M[s.dataset.k])});
     });
   }
-  $("remeasure").addEventListener("click",()=>{GELUID.speel("meet");remeasures++;meting=null;show("load");startLoader()});
-  $("seamless").addEventListener("click",()=>{GELUID.speel("naai",{fadeNa:4,fade:1.5});renderMake();show("make")});
+  $("remeasure").addEventListener("click",()=>{remeasures++;meting=null;show("load");startLoader()});
+  $("seamless").addEventListener("click",()=>{renderMake();show("make")});
 
   /* ---- maken ---- */
   let curPat=null;
@@ -834,7 +833,7 @@ function startDesk(){
     if(!p||!p.on)return;
     lastAct=Date.now();
     if(!phoneSeen){phoneSeen=true;if(page==="qr")show("grid")}
-    grid.classList.toggle("zoekt",!!p.speaking&&(page==="grid"));GELUID.flikker(!!p.speaking&&(page==="grid"));
+    grid.classList.toggle("zoekt",!!p.speaking&&(page==="grid"));
     if(p.speaking&&page==="detail")show("grid",{keepScroll:false});
     if(p.qid&&p.qid!==lastQid){lastQid=p.qid;if(page!=="grid")show("grid");applyFilter(find(p.q));scrollTo({top:0,behavior:"smooth"})}
     if(p.lengte)M.lengte=p.lengte;
