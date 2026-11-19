@@ -35,7 +35,7 @@ img{display:block}
 .stage.lang{height:1247px}
 
 /* pagina 1: QR + carrousel */
-.ring{position:absolute;inset:0;overflow:hidden}
+.ring{position:absolute;inset:0}
 .fit .stage{overflow:visible}
 .ring figure{position:absolute;margin:0;width:236px;height:236px;display:flex;align-items:center;justify-content:center;will-change:transform}
 .ring img{max-width:100%;max-height:100%;object-fit:contain}
@@ -649,7 +649,7 @@ const GELUID=(()=>{
     if(fadeNa){const t=ctx.currentTime+fadeNa;g.gain.setValueAtTime(vol,t);g.gain.linearRampToValueAtTime(0,t+fade);s.stop(t+fade+.05)}
     return{stop(f=.25){try{const t=ctx.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+f);s.stop(t+f+.05)}catch(e){}}}}
   let lastKlik=0;
-  function klik(){const n=performance.now();if(n-lastKlik<70)return;lastKlik=n;speel("klik",{vol:.8})}
+  function klik(){const n=performance.now();if(n-lastKlik<70)return;lastKlik=n;speel("klik",{vol:.48})}
   /* laadgeluid dat flikkert: loopt rond en wordt willekeurig aan- en uitgezet, zoals de foto's van kleur naar grijs gaan */
   let fl=null;
   function flikker(aan){
@@ -821,7 +821,22 @@ function startDesk(){
     const Ys=[626,676,730,785,839,889];
     $("steps").innerHTML=curPat.stappen.map((t,i)=>`<li><span class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="square"><path d="M4 12.5l5 5L20 6"/></svg></span><span>${esc(t)}</span></li>`).join("");
   }
-  $("steps").addEventListener("click",e=>{const li=e.target.closest("li");if(li)li.classList.toggle("ok")});
+  $("steps").addEventListener("click",e=>{const li=e.target.closest("li");if(!li)return;li.classList.toggle("ok");
+    const alle=[...$("steps").children];if(li.classList.contains("ok")&&alle.length&&alle.every(x=>x.classList.contains("ok")))confetti()});
+  /* confetti als alle stappen afgevinkt zijn: rood, zwart en wit zoals de rest van de site */
+  function confetti(){
+    const cv=document.createElement("canvas");cv.style.cssText="position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:50";document.body.appendChild(cv);
+    const dpr=Math.min(2,devicePixelRatio||1),W=innerWidth,H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;const c=cv.getContext("2d");c.scale(dpr,dpr);
+    const KL=["#ff0000","#ff0000","#ff0000","#000000","#ffffff"];
+    const P=Array.from({length:220},(_,i)=>{const links=i%2===0;return{x:links?-10:W+10,y:H*(.55+Math.random()*.35),vx:(links?1:-1)*(6+Math.random()*9),vy:-(9+Math.random()*11),w:6+Math.random()*7,h:9+Math.random()*9,r:Math.random()*6,vr:(Math.random()-.5)*.4,k:KL[i%KL.length],rond:Math.random()<.25}});
+    const t0=performance.now();
+    (function stap(t){c.clearRect(0,0,W,H);let leeft=false;
+      for(const q of P){q.vy+=.32;q.vx*=.99;q.vy*=.99;q.x+=q.vx;q.y+=q.vy;q.r+=q.vr;if(q.y<H+30)leeft=true;
+        c.save();c.translate(q.x,q.y);c.rotate(q.r);c.scale(1,Math.cos(q.r*2));c.fillStyle=q.k;c.strokeStyle="rgba(0,0,0,.25)";c.lineWidth=.6;
+        if(q.rond){c.beginPath();c.arc(0,0,q.w/2,0,7);c.fill();if(q.k==="#ffffff")c.stroke()}else{c.fillRect(-q.w/2,-q.h/2,q.w,q.h);if(q.k==="#ffffff")c.strokeRect(-q.w/2,-q.h/2,q.w,q.h)}
+        c.restore()}
+      if(leeft&&t-t0<7000)requestAnimationFrame(stap);else cv.remove()})(t0);
+  }
   $("dl").addEventListener("click",async()=>{
     const b=$("dl");if(!curPat)return;b.classList.add("bezig");
     try{const r=await buildPDF(COLL[item],curPat);const a=document.createElement("a");a.href=URL.createObjectURL(r.blob);a.download=r.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),15000)}
