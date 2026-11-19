@@ -169,10 +169,11 @@ img{display:block}
 .len input:focus{box-shadow:0 0 0 3px var(--rood)}
 .camicon{position:absolute;left:50%;top:50%;width:227px;height:227px;transform:translate(-50%,-50%)}
 .camicon img{width:100%;height:100%}
-.camlive{position:absolute;left:0;right:0;bottom:0;top:calc(140px + env(safe-area-inset-top));background:var(--zw)}
+.camlive{position:absolute;inset:0;background:var(--zw)}
+#fCam .ph-mm{z-index:25}
 .camlive video,.camlive canvas,.camlive .still{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .camlive .spiegel{transform:scaleX(-1)}
-.silh{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.silh{position:absolute;left:0;top:calc(140px + env(safe-area-inset-top));width:100%;height:calc(100% - 156px - env(safe-area-inset-top));pointer-events:none}
 .silh path,.silh circle{fill:none;stroke:var(--wit);stroke-width:3;stroke-dasharray:10 8;vector-effect:non-scaling-stroke;transition:stroke .3s}
 .silh.ok path,.silh.ok circle{stroke:var(--rood)}
 .tel{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font-family:var(--tw);font-size:96px;color:var(--wit);text-shadow:0 2px 12px rgba(0,0,0,.4)}
@@ -277,7 +278,7 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 const fmt=n=>String(Math.round(n*2)/2).replace(".",",");
 const H=location.hash.match(/^#t-([a-z0-9]{4,8})$/);
 const ROLE=H?"telefoon":"desk";
-const VERSIE="27";/* telefoon haalt via de QR-code altijd deze versie op, niet een oude uit het geheugen */
+const VERSIE="28";/* telefoon haalt via de QR-code altijd deze versie op, niet een oude uit het geheugen */
 const ALPHA="abcdefghjkmnpqrstuvwxyz23456789";
 const newCode=()=>{let c="";for(let i=0;i<5;i++)c+=ALPHA[Math.floor(Math.random()*ALPHA.length)];return c};
 
@@ -976,7 +977,7 @@ function startPhone(code){
   const dbgLog=[];function dbg(t){dbgLog.push(t);if(dbgLog.length>8)dbgLog.shift();dbgBox.textContent=(SR?"spraak: ja":"spraak: NIET beschikbaar")+"\n"+dbgLog.join("\n")}
   document.querySelectorAll("#phone .mm").forEach(m=>{let t=0;m.addEventListener("pointerdown",()=>{t=setTimeout(()=>{dbgBox.style.display=dbgBox.style.display==="none"?"block":"none";dbg("hulp aan")},2000)});["pointerup","pointerleave","pointercancel"].forEach(ev=>m.addEventListener(ev,()=>clearTimeout(t)))});
   const waak=(()=>{
-    let r=null,moet=false,actief=false,stilte=0,fouten=0,herstart=0,vraag="";
+    let r=null,moet=false,actief=false,stilte=0,fouten=0,herstart=0,vraag="",leeg=0;
     const WAAK=/(?:^|\s)(?:(?:h[aeiy]+[jy]?|hej|hai|ey|e|a)\s+)?(?:mo\s?mu+|mo\s?moe|moe\s?moe|momo+|mo\s?mo|mu\s?mu|mamu|moomoo|mo\s?moo|momu)(?=\s|$)/;
     const nrm=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ");
     function klaar(){
@@ -991,6 +992,7 @@ function startPhone(code){
       try{
         r=new SR();r.lang="nl-BE";r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
         r.onresult=e=>{
+          leeg=0;
           let alles="";for(let i=0;i<e.results.length;i++)alles+=" "+e.results[i][0].transcript;
           const t=nrm(alles),m=t.match(WAAK);dbg("hoort: "+t.slice(-80));
           if(!m)return;
@@ -1001,16 +1003,19 @@ function startPhone(code){
         r.onerror=e=>{dbg("fout: "+e.error);if(e.error==="not-allowed"||e.error==="service-not-allowed")fouten=99;else fouten++};
         r.onstart=()=>dbg("luistert");
         r.onend=()=>{r=null;if(actief){klaar()}
-          if(moet&&fouten<99){clearTimeout(herstart);herstart=setTimeout(maak,fouten>3?3000:250)}};
+          leeg++;if(leeg>12){fouten=99;dbg("gepauzeerd tot volgende tik")}
+          if(moet&&fouten<99){clearTimeout(herstart);herstart=setTimeout(maak,fouten>3?3000:400)}};
         r.start();fouten=Math.min(fouten,3);
       }catch(e){r=null}
     }
     /* sommige telefoons (iPhone) laten pas luisteren na een eerste tik op het scherm */
     /* iPhone: luisteren moet starten binnen een tik; daarom hier meteen (niet bij een tik op de patch zelf) */
-    const tik=e=>{if(e.target&&e.target.closest&&e.target.closest("#mic"))return;if(fouten>=99)fouten=0;if(moet&&!r&&!listening)maak()};
+    const tik=e=>{if(e.target&&e.target.closest&&e.target.closest("#mic"))return;if(fouten>=99){fouten=0;leeg=0}if(moet&&!r&&!listening)maak()};
     addEventListener("touchend",tik,{passive:true,capture:true});addEventListener("click",tik,{passive:true,capture:true});
     document.addEventListener("visibilitychange",()=>{if(document.hidden){const m=moet;uit();moet=m}else if(moet)maak()});
-    function aan(){moet=true;if(cur==="mic")maak()}
+    /* Opera (en Samsung Internet) tonen bij elke start een melding en herkennen geen spraak: daar enkel de knop */
+    const ua=navigator.userAgent,geenWaak=/OPR\/|OPT\/|Opera|OPiOS|SamsungBrowser|Firefox|FxiOS/.test(ua);
+    function aan(){if(geenWaak)return;moet=true;if(cur==="mic")maak()}
     function uit(){moet=false;clearTimeout(herstart);clearTimeout(stilte);if(actief){actief=false;listening=false;setPressed(false);link.set({speaking:false})}try{r&&r.abort()}catch(e){}r=null}
     return{aan,uit};
   })();
