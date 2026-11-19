@@ -664,12 +664,29 @@ const GELUID=(()=>{
   return{speel,klik,flikker,klaar};
 })();
 
+/* Stemcommando's ("Hey MoMu pin it", ...). Geeft {cmd,arg} of null (dan is het een zoekopdracht). */
+const RANG={eerste:1,tweede:2,derde:3,vierde:4,vijfde:5,zesde:6,zevende:7,achtste:8,negende:9,tiende:10,een:1,twee:2,drie:3,vier:4,vijf:5,zes:6,zeven:7,acht:8,negen:9,tien:10};
+function commando(tekst){
+  const t=" "+tekst.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim()+" ";
+  if(/ (pin ?it|ping it|pinnit|pinned|pin het|pinnen|vastpinnen|pin dit) /.test(t))return{cmd:"pin"};
+  if(/ (re ?measure|remeasuring|remeasured|opnieuw meten|meet opnieuw|hermeten|herme[e]?t|nog eens meten) /.test(t))return{cmd:"opnieuw"};
+  if(/ (make it seamless|make it seamlessly|seamless|seemless|make it|maak het naadloos|naadloos) /.test(t))return{cmd:"seamless"};
+  if(/ (download|downloaden|download het patroon|patroon downloaden) /.test(t))return{cmd:"download"};
+  if(/^ (terug|ga terug|naar het overzicht|overzicht|home|naar huis|begin) $/.test(t)||/ (ga terug|terug naar) /.test(t))return{cmd:"terug"};
+  let m=t.match(/ stap (\d+|een|twee|drie|vier|vijf|zes|zeven|acht|negen|tien) /);
+  if(m&&/ (klaar|af|gedaan|afvinken|vink|aan) /.test(t))return{cmd:"stap",arg:+m[1]||RANG[m[1]]};
+  if(/ (volgende stap|stap klaar|klaar met (de|deze) stap|vink (het|de stap)? ?af|afvinken) /.test(t))return{cmd:"stap",arg:0};
+  m=t.match(/ (?:open|kies|neem|toon|pak|selecteer|klik op) (?:de |het |me )?(?:(eerste|tweede|derde|vierde|vijfde|zesde|zevende|achtste|negende|tiende)|nummer (\d+)|(\d+)(?:e|ste|de)?) /);
+  if(m)return{cmd:"open",arg:RANG[m[1]]||+(m[2]||m[3])};
+  return null;
+}
+
 /* ======================================================================
    DESK
    ====================================================================== */
 function startDesk(){
   $("desk").hidden=false;
-  let code=newCode(),link=null,page="qr",item=null,phone={},phoneSeen=false,lastQid=null,meting=null,lastAct=Date.now(),remeasures=0;
+  let code=newCode(),link=null,page="qr",item=null,phone={},phoneSeen=false,lastQid=null,lastCid=null,meting=null,lastAct=Date.now(),remeasures=0;
   const pages={qr:"pQR",grid:"pGrid",detail:"pDetail",load:"pLoad",result:"pResult",make:"pMake"};
   /* schaal: het ontwerp is 1512 x 982 */
   function scale(){
@@ -852,10 +869,22 @@ function startDesk(){
     if(!phoneSeen){phoneSeen=true;if(page==="qr")show("grid")}
     grid.classList.toggle("zoekt",!!p.speaking&&(page==="grid"));
     if(p.speaking&&page==="detail")show("grid",{keepScroll:false});
+    if(p.cid&&p.cid!==lastCid){lastCid=p.cid;voerUit(p.cmd,p.arg)}
     if(p.qid&&p.qid!==lastQid){lastQid=p.qid;if(page!=="grid")show("grid");applyFilter(find(p.q));scrollTo({top:0,behavior:"smooth"})}
     if(p.lengte)M.lengte=p.lengte;
     if(page==="load"&&typeof p.prog==="number"&&p.ronde===remeasures)phoneProg=Math.max(phoneProg,p.prog);
     phone=p;
+  }
+  /* stemcommando's van de telefoon: doen hetzelfde als op de knoppen klikken */
+  function voerUit(cmd,arg){
+    lastAct=Date.now();
+    if(cmd==="terug"){if(page!=="grid"&&page!=="qr")show("grid");else applyFilter(null);return}
+    if(cmd==="open"&&page==="grid"){const zicht=tiles.filter(t=>!t.classList.contains("uit")).sort((a,b)=>(+a.style.order||0)-(+b.style.order||0));const t=zicht[(arg||1)-1];if(t)openItem(+t.dataset.i);return}
+    if(cmd==="pin"&&page==="detail"&&!$("pinIt").hidden){$("pinIt").click();return}
+    if(cmd==="opnieuw"&&page==="result"){$("remeasure").click();return}
+    if(cmd==="seamless"&&page==="result"){$("seamless").click();return}
+    if(cmd==="download"&&page==="make"){$("dl").click();return}
+    if(cmd==="stap"&&page==="make"){const li=[...$("steps").children];const doel=arg?li[arg-1]:li.find(x=>!x.classList.contains("ok"));if(doel&&!doel.classList.contains("ok"))doel.click();return}
   }
   function onFoto(d){
     if(!d||!d.img||d.ronde!==remeasures||page!=="load")return;
@@ -880,7 +909,7 @@ function startPhone(code){
   try{lengte=+sessionStorage.getItem("mis-lengte")||null}catch(e){}
   link.set({on:true,speaking:false,lengte,prog:0,ronde:0});
   const fp={mic:$("fMic"),len:$("fLen"),cam:$("fCam")};let cur="mic";
-  function showF(p){if(cur===p)return;cur=p;Object.entries(fp).forEach(([k,el])=>el.hidden=k!==p);if(p!=="cam")stopCam();if(p==="len")setTimeout(()=>{try{$("lenIn").focus()}catch(e){}},250);if(p==="cam"){resetCam();startCam()}}
+  function showF(p){if(cur===p)return;cur=p;if(p==="mic"||p==="len")setTimeout(()=>waak.aan(),300);else waak.uit();Object.entries(fp).forEach(([k,el])=>el.hidden=k!==p);if(p!=="cam")stopCam();if(p==="len")setTimeout(()=>{try{$("lenIn").focus()}catch(e){}},250);if(p==="cam"){resetCam();startCam()}}
   link.onState(d=>{
     desk=d;if(!d.page)return;
     if(d.page==="einde"){showF("mic");return}
@@ -903,7 +932,7 @@ function startPhone(code){
   }
   function setPressed(on){mic.classList.toggle("druk",on);ringd.style.display=on?"none":"";if(on)ringv.removeAttribute("hidden");else ringv.setAttribute("hidden","");if(on){cancelAnimationFrame(raf);raf=requestAnimationFrame(waveLoop)}}
   function startListen(){
-    if(listening)return;heard="";partial="";
+    if(listening)return;waak.uit();heard="";partial="";
     setPressed(true);listening=true;link.set({speaking:true});
     if(!SR)return;
     try{
@@ -919,13 +948,62 @@ function startPhone(code){
     if(!listening)return;listening=false;toggleMode=false;
     setPressed(false);
     const q=(heard+" "+partial).trim();
-    link.set(q?{speaking:false,q,qid:++qid+"-"+Date.now()}:{speaking:false});
+    stuur(q);
+    setTimeout(()=>waak.aan(),400);
   }
   function stopListen(){if(!listening)return;toggleMode=false;if(rec){try{rec.stop()}catch(e){finish()}setTimeout(()=>{if(listening)finish()},1500)}else finish()}
   mic.addEventListener("pointerdown",e=>{e.preventDefault();try{mic.setPointerCapture(e.pointerId)}catch(_){}if(listening&&toggleMode){stopListen();return}downAt=performance.now();startListen()});
   const up=()=>{if(!listening||toggleMode)return;if(performance.now()-downAt<350){toggleMode=true;return}stopListen()};
   mic.addEventListener("pointerup",up);mic.addEventListener("pointercancel",up);
   mic.addEventListener("contextmenu",e=>e.preventDefault());
+
+  /* zoekopdracht of stemcommando naar de desk; op het lengtescherm wordt een getal je lengte */
+  function stuur(q){
+    if(!q){link.set({speaking:false});return}
+    if(cur==="len"){const m=q.replace(/(\d)[.,](\d)/g,"$1$2").match(/(\d)\s*(?:m|meter)\s*(\d{1,2})|(\d{3})/);if(m){lenIn.value=m[3]||(m[1]+m[2].padStart(2,"0"));link.set({speaking:false});takeLen();return}}
+    const c=commando(q);
+    if(c)link.set({speaking:false,cmd:c.cmd,arg:c.arg||0,cid:++qid+"-"+Date.now()});
+    else if(cur==="mic")link.set({speaking:false,q,qid:++qid+"-"+Date.now()});
+    else link.set({speaking:false});
+  }
+  /* ---- "Hey MoMu": de telefoon luistert stil mee; na "Hey MoMu" wordt wat je zegt de zoekopdracht ---- */
+  const waak=(()=>{
+    let r=null,moet=false,actief=false,stilte=0,fouten=0,herstart=0,vraag="";
+    const WAAK=/\b(?:h[ae]+[iyj]?|hey|hej|hai|ey)\s+(?:mo\s?mu|mo\s?moe|momo|mo\s?mo|mumu|mamu|moomoo|mo\s?moo|mu\s?mu)\b/;
+    const nrm=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ");
+    function klaar(){
+      clearTimeout(stilte);if(!actief)return;actief=false;listening=false;setPressed(false);
+      const q=vraag.trim();vraag="";
+      stuur(q);
+      try{r&&r.abort()}catch(e){}
+    }
+    function maak(){
+      if(!SR||!moet||r||listening&&!actief)return;
+      if(!(cur==="mic"||cur==="len"||(cur==="cam"&&camState==="klaar")))return;
+      try{
+        r=new SR();r.lang="nl-BE";r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
+        r.onresult=e=>{
+          let alles="";for(let i=0;i<e.results.length;i++)alles+=" "+e.results[i][0].transcript;
+          const t=nrm(alles),m=t.match(WAAK);
+          if(!m)return;
+          if(!actief){actief=true;listening=true;setPressed(true);link.set({speaking:true})}
+          vraag=t.slice(m.index+m[0].length);talkUntil=performance.now()+700;
+          clearTimeout(stilte);stilte=setTimeout(klaar,vraag.trim()?1600:6000);
+        };
+        r.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed")fouten=99;else fouten++};
+        r.onend=()=>{r=null;if(actief){klaar()}
+          if(moet&&fouten<99){clearTimeout(herstart);herstart=setTimeout(maak,fouten>3?3000:250)}};
+        r.start();fouten=Math.min(fouten,3);
+      }catch(e){r=null}
+    }
+    /* sommige telefoons (iPhone) laten pas luisteren na een eerste tik op het scherm */
+    addEventListener("pointerdown",()=>{if(fouten>=99){fouten=0}if(moet&&!r&&!listening)setTimeout(maak,600)},{passive:true});
+    document.addEventListener("visibilitychange",()=>{if(document.hidden){const m=moet;uit();moet=m}else if(moet)maak()});
+    function aan(){moet=true;if(cur==="mic")maak()}
+    function uit(){moet=false;clearTimeout(herstart);clearTimeout(stilte);if(actief){actief=false;listening=false;setPressed(false);link.set({speaking:false})}try{r&&r.abort()}catch(e){}r=null}
+    return{aan,uit};
+  })();
+  waak.aan();
 
   /* ---- lengte ---- */
   const lenIn=$("lenIn");let lenTimer=0;
@@ -1006,7 +1084,7 @@ function startPhone(code){
       arm:G.arm&&G.arm.map(pt),leg:G.leg&&G.leg.map(pt)};
     /* de desk toont de foto zoals anderen je zien: niet gespiegeld */
     const st=$("still");st.src=img;st.hidden=false;v.hidden=true;$("silh").classList.remove("ok");
-    stopCam();camState="klaar";
+    stopCam();camState="klaar";setTimeout(()=>waak.aan(),500);
     link.set({prog:1,ronde});link.foto({img,maten,geo,ronde});
   }
   /* maten uit lichaamspunten en silhouet; geeft ook de lijnen voor de desk (genormaliseerd 0..1 in het camerabeeld) */
