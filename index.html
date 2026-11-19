@@ -276,6 +276,7 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 const fmt=n=>String(Math.round(n*2)/2).replace(".",",");
 const H=location.hash.match(/^#t-([a-z0-9]{4,8})$/);
 const ROLE=H?"telefoon":"desk";
+const VERSIE="26";/* telefoon haalt via de QR-code altijd deze versie op, niet een oude uit het geheugen */
 const ALPHA="abcdefghjkmnpqrstuvwxyz23456789";
 const newCode=()=>{let c="";for(let i=0;i<5;i++)c+=ALPHA[Math.floor(Math.random()*ALPHA.length)];return c};
 
@@ -712,7 +713,7 @@ function startDesk(){
   function connect(){
     if(link)link.close();
     code=newCode();link=makeLink(code,"desk");phone={};phoneSeen=false;lastQid=null;meting=null;item=null;M={lengte:170,arm:60,schouder:40,borst:92,heup:98,been:80};
-    const url=location.href.split("#")[0]+"#t-"+code;
+    const url=location.origin+location.pathname+"?v="+VERSIE+"#t-"+code;
     try{const q=qrcode(0,"M");q.addData(url);q.make();$("qr").innerHTML=q.createSvgTag({scalable:true,margin:0})}catch(e){$("qr").textContent=url}
     $("qr").dataset.url=url;
     link.onState(onPhone);link.onFoto(onFoto);
@@ -969,9 +970,13 @@ function startPhone(code){
     else link.set({speaking:false});
   }
   /* ---- "Hey MoMu": de telefoon luistert stil mee; na "Hey MoMu" wordt wat je zegt de zoekopdracht ---- */
+  /* verborgen hulp om te testen: houd het MM-logo 2 seconden ingedrukt */
+  const dbgBox=document.createElement("div");dbgBox.style.cssText="position:fixed;left:8px;right:8px;bottom:8px;z-index:99;background:rgba(0,0,0,.8);color:#fff;font:12px/1.4 monospace;padding:8px;white-space:pre-wrap;display:none";document.body.appendChild(dbgBox);
+  const dbgLog=[];function dbg(t){dbgLog.push(t);if(dbgLog.length>8)dbgLog.shift();dbgBox.textContent=(SR?"spraak: ja":"spraak: NIET beschikbaar")+"\n"+dbgLog.join("\n")}
+  document.querySelectorAll("#phone .mm").forEach(m=>{let t=0;m.addEventListener("pointerdown",()=>{t=setTimeout(()=>{dbgBox.style.display=dbgBox.style.display==="none"?"block":"none";dbg("hulp aan")},2000)});["pointerup","pointerleave","pointercancel"].forEach(ev=>m.addEventListener(ev,()=>clearTimeout(t)))});
   const waak=(()=>{
     let r=null,moet=false,actief=false,stilte=0,fouten=0,herstart=0,vraag="";
-    const WAAK=/\b(?:h[ae]+[iyj]?|hey|hej|hai|ey)\s+(?:mo\s?mu|mo\s?moe|momo|mo\s?mo|mumu|mamu|moomoo|mo\s?moo|mu\s?mu)\b/;
+    const WAAK=/(?:^|\s)(?:(?:h[aeiy]+[jy]?|hej|hai|ey|e|a)\s+)?(?:mo\s?mu+|mo\s?moe|moe\s?moe|momo+|mo\s?mo|mu\s?mu|mamu|moomoo|mo\s?moo|momu)(?=\s|$)/;
     const nrm=t=>t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ");
     function klaar(){
       clearTimeout(stilte);if(!actief)return;actief=false;listening=false;setPressed(false);
@@ -986,20 +991,23 @@ function startPhone(code){
         r=new SR();r.lang="nl-BE";r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
         r.onresult=e=>{
           let alles="";for(let i=0;i<e.results.length;i++)alles+=" "+e.results[i][0].transcript;
-          const t=nrm(alles),m=t.match(WAAK);
+          const t=nrm(alles),m=t.match(WAAK);dbg("hoort: "+t.slice(-80));
           if(!m)return;
           if(!actief){actief=true;listening=true;setPressed(true);link.set({speaking:true})}
           vraag=t.slice(m.index+m[0].length);talkUntil=performance.now()+700;
           clearTimeout(stilte);stilte=setTimeout(klaar,vraag.trim()?1600:6000);
         };
-        r.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed")fouten=99;else fouten++};
+        r.onerror=e=>{dbg("fout: "+e.error);if(e.error==="not-allowed"||e.error==="service-not-allowed")fouten=99;else fouten++};
+        r.onstart=()=>dbg("luistert");
         r.onend=()=>{r=null;if(actief){klaar()}
           if(moet&&fouten<99){clearTimeout(herstart);herstart=setTimeout(maak,fouten>3?3000:250)}};
         r.start();fouten=Math.min(fouten,3);
       }catch(e){r=null}
     }
     /* sommige telefoons (iPhone) laten pas luisteren na een eerste tik op het scherm */
-    addEventListener("pointerdown",()=>{if(fouten>=99){fouten=0}if(moet&&!r&&!listening)setTimeout(maak,600)},{passive:true});
+    /* iPhone: luisteren moet starten binnen een tik; daarom hier meteen (niet bij een tik op de patch zelf) */
+    const tik=e=>{if(e.target&&e.target.closest&&e.target.closest("#mic"))return;if(fouten>=99)fouten=0;if(moet&&!r&&!listening)maak()};
+    addEventListener("touchend",tik,{passive:true,capture:true});addEventListener("click",tik,{passive:true,capture:true});
     document.addEventListener("visibilitychange",()=>{if(document.hidden){const m=moet;uit();moet=m}else if(moet)maak()});
     function aan(){moet=true;if(cur==="mic")maak()}
     function uit(){moet=false;clearTimeout(herstart);clearTimeout(stilte);if(actief){actief=false;listening=false;setPressed(false);link.set({speaking:false})}try{r&&r.abort()}catch(e){}r=null}
