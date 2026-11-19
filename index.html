@@ -9,7 +9,7 @@
 @font-face{font-family:"Alpina Fine";src:url(GT-Alpina-Fine-Extended-Bold-Trial.otf) format("opentype");font-weight:700;font-display:block}
 @font-face{font-family:"Alpina Tw";src:url(GT-Alpina-Typewriter-Regular-Trial.otf) format("opentype");font-display:block}
 @font-face{font-family:"America Exp";src:url(GT-America-Expanded-Light-Trial.otf) format("opentype");font-weight:300;font-display:block}
-:root{--zw:#000;--rood:#f00;--wit:#fff;--grijs:#d9d9d9;--fine:"Alpina Fine",Georgia,serif;--tw:"Alpina Tw","Courier New",monospace;--am:"America Exp",Arial,sans-serif}
+:root{--t-titel:40px;--t-sub:20px;--t-tekst:12px;--zw:#000;--rood:#f00;--wit:#fff;--grijs:#d9d9d9;--fine:"Alpina Fine",Georgia,serif;--tw:"Alpina Tw","Courier New",monospace;--am:"America Exp",Arial,sans-serif}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--wit);color:var(--zw);font-family:var(--am);font-weight:300;-webkit-font-smoothing:antialiased}
 [hidden]{display:none!important}
@@ -28,7 +28,8 @@ img{display:block}
 .fit{display:flex;align-items:center;justify-content:center;min-height:100vh;overflow:hidden}
 .fit.dark{background:var(--zw)}
 .fit.dark .stage{background:var(--zw)}
-.desk-mm{left:48px;top:13px;font-size:74px}
+.desk-mm{left:42px;top:16px;font-size:184px;line-height:209px}
+.stage.lang{height:1247px}
 
 /* pagina 1: QR + carrousel */
 .ring{position:absolute;inset:0}
@@ -38,16 +39,16 @@ img{display:block}
 .qr svg{width:380px;height:380px;display:block}
 
 /* pagina 2: raster */
-#pGrid .stage{height:auto;min-height:982px;overflow:visible;padding:100px 0 120px}
-.grid{display:grid;grid-template-columns:repeat(7,184px);column-gap:20px;row-gap:12px;width:1408px;margin-left:48px}
+#pGrid .stage{height:auto;min-height:982px;overflow:visible;padding:298px 0 140px}
+.grid{display:grid;grid-template-columns:repeat(7,184px);column-gap:21px;row-gap:34px;width:1414px;margin-left:43px}
 .tile{position:relative;width:184px;height:195px;display:block;text-align:center}
 .tile .ph{width:184px;height:181px;display:flex;align-items:center;justify-content:center}
 .tile .ph img{max-width:100%;max-height:100%;object-fit:contain}
-.tile .cap{display:block;margin-top:3px;font-size:8px;line-height:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tile .big{position:absolute;left:50%;top:50%;width:279px;height:299px;background:var(--wit);transform:translate(-50%,-50%) scale(.66);opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s;z-index:10;display:flex;flex-direction:column}
-.tile .big .bp{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.tile .cap{display:block;margin-top:4px;font-size:var(--t-tekst);line-height:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .big{position:absolute;left:50%;top:50%;width:279px;height:auto;background:var(--wit);transform:translate(-50%,-50%) scale(.66);opacity:0;pointer-events:none;transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s;z-index:10;display:flex;flex-direction:column}
+.tile .big .bp{height:270px;display:flex;align-items:center;justify-content:center}
 .tile .big .bp img{max-width:100%;max-height:100%;object-fit:contain}
-.tile .big .bc{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;font-size:8px;line-height:12px;padding:5px 2px 2px}
+.tile .big .bc{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;font-size:var(--t-tekst);line-height:15px;padding:6px 2px 4px}
 .tile .big .bc span:first-child{text-align:left}.tile .big .bc span:last-child{text-align:right}
 .tile:hover,.tile:focus-visible{z-index:9;outline:none}
 .tile:hover .big,.tile:focus-visible .big{opacity:1;transform:translate(-50%,-50%) scale(1)}
@@ -59,50 +60,55 @@ img{display:block}
 @keyframes inkom{from{opacity:0;transform:translateY(8px)}}
 
 /* pagina 3: detail */
-/* beschrijving: groeit naar boven, onderkant op 902 zoals in het ontwerp */
-.descbox{position:absolute;left:102px;bottom:80px;width:389px;max-height:780px;display:flex;flex-direction:column}
-.descbox h2{margin:0 0 13px;font-family:var(--tw);font-weight:400;font-size:14px;line-height:1.2}
-.descbox p{margin:0;font-family:var(--am);font-size:10px;line-height:1.55;overflow:hidden}
-.medbox{position:absolute;left:1226px;top:265px;width:240px}
-.medbox h3{margin:0 0 4px;font-family:var(--tw);font-weight:400;font-size:14px;line-height:1.2}
-.medbox ul{list-style:none;margin:0;padding:0 0 0 5px;font-size:8px;line-height:1.5}
-.medbox li::before{content:"\00B0";margin-right:5px}
-.zoom{position:absolute;left:524px;top:100px;width:463px;height:617px;display:flex;align-items:center;justify-content:center}
-.zoomwin{position:relative;overflow:hidden;cursor:zoom-in;max-width:100%;max-height:100%}
+.band{position:absolute;left:0;top:299px;width:1512px;height:521px;border:2px solid var(--zw);pointer-events:none}
+.links{position:absolute;left:0;top:299px;width:495px;min-height:521px;border:2px solid var(--zw);background:var(--wit);padding:75px 56px 70px 47px;z-index:3}
+.links h2,.rechts h3{margin:0 0 16px;font-family:var(--tw);font-weight:400;font-size:var(--t-sub);line-height:1.15}
+.links p{margin:0;font-size:var(--t-tekst);line-height:1.55;max-height:362px;overflow:hidden}
+.links.open p{max-height:none}
+.leesmeer{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-family:var(--tw);font-size:var(--t-sub)}
+.leesmeer:hover{color:var(--rood)}
+.rechts{position:absolute;left:1017px;top:299px;width:495px;height:521px;border:2px solid var(--zw);padding:65px 30px 30px 86px;overflow:hidden}
+.rechts section{margin-bottom:22px}
+.rechts .v{font-size:var(--t-tekst);line-height:1.5}
+.rechts ul{list-style:none;margin:0;padding:0 0 0 4px;font-size:var(--t-tekst);line-height:1.5}
+.rechts li::before{content:"\00B0";margin-right:6px}
+.zoom{position:absolute;left:524px;top:266px;width:463px;height:617px;display:flex;align-items:center;justify-content:center;z-index:2}
+.zoomwin{position:relative;overflow:hidden;cursor:zoom-in;max-width:100%;max-height:100%;background:var(--wit)}
 .zoomwin img{width:100%;height:100%;transition:transform .25s ease-out;transform-origin:50% 50%}
 .zoomwin.on img{transform:scale(2.4)}
 .patch{position:absolute;display:block;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .patch img{width:100%;height:100%}
-.pin{left:1285px;top:783px;width:141px;height:141px}
-.pin .pt{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.pin .txt{font-family:"Old Standard TT",var(--fine);font-size:31px;fill:var(--wit);transition:fill .25s}
-.pin .kop{fill:#121428;transition:fill .25s}
-.pin:hover{transform:scale(1.1)}
-.pin:hover .txt{fill:var(--zw)}
-.pin:hover .kop{fill:var(--wit)}
+.pin{left:654px;top:930px;width:234px;height:234px}
+.pin .h{position:absolute;inset:0;opacity:0;transition:opacity .3s ease-in}
+.pin:hover{transform:scale(1.05)}
+.pin:hover .h{opacity:1}
+.pin .pins{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.pin .pins g{opacity:0;transition:transform .45s cubic-bezier(.3,1.4,.5,1),opacity .2s;transform:translate(var(--x),var(--y))}
+.pin:hover .pins g{opacity:1;transform:translate(0,0)}
+.pin:hover .pins g:nth-child(2){transition-delay:.06s}.pin:hover .pins g:nth-child(3){transition-delay:.12s}.pin:hover .pins g:nth-child(4){transition-delay:.18s}
 
 /* pagina 4: laden */
-.pct{position:absolute;left:0;right:0;top:363px;text-align:center;font-family:var(--tw);font-size:36.67px;color:var(--wit);font-variant-numeric:tabular-nums}
+.pct{position:absolute;left:0;right:0;top:363px;text-align:center;font-family:var(--tw);font-size:var(--t-titel);color:var(--wit);font-variant-numeric:tabular-nums}
 .bar{position:absolute;left:296px;top:451px;width:921px;height:149px;background:var(--wit);padding:14px}
 .bar .fill{height:100%;width:0;background:repeating-linear-gradient(-45deg,var(--rood) 0 26px,var(--wit) 26px 52px);background-size:73.5px 73.5px;animation:streep 1.1s linear infinite;transition:width .4s ease-out}
 @keyframes streep{to{background-position:73.5px 0}}
 
 /* pagina 5: resultaat */
-.foto{position:absolute;left:461px;top:148px;width:485px;height:754px;background:#e9e9e9;overflow:hidden}
+.foto{position:absolute;left:481px;top:288px;width:485px;height:754px;background:#e9e9e9;overflow:hidden}
 .foto img{width:100%;height:100%;object-fit:cover}
-.meet{position:absolute;inset:0;width:1512px;height:982px;pointer-events:none}
+.meet{position:absolute;inset:0;width:1512px;height:1247px;pointer-events:none}
 .meet .ml{stroke:var(--rood);stroke-width:4;fill:none;stroke-dasharray:12 9;animation:mars 1.6s linear infinite}
 .meet .ld{stroke:var(--rood);stroke-width:4;fill:none}
 .meet .draw{stroke-dashoffset:var(--len);animation:teken .9s ease-out forwards;animation-delay:var(--dl)}
 @keyframes teken{to{stroke-dashoffset:0}}
 @keyframes mars{to{stroke-dashoffset:-42}}
-.lab{position:absolute;font-size:14px;line-height:1;white-space:nowrap;opacity:0;animation:verschijn .4s forwards;animation-delay:var(--dl)}
-.num{position:absolute;font-size:12px;line-height:1;white-space:nowrap;opacity:0;animation:verschijn .4s forwards;animation-delay:var(--dl)}
+.lab{position:absolute;font-size:var(--t-tekst);line-height:1;white-space:nowrap;opacity:0;animation:verschijn .4s forwards;animation-delay:var(--dl)}
+.num{position:absolute;font-size:var(--t-tekst);line-height:1;white-space:nowrap;opacity:0;animation:verschijn .4s forwards;animation-delay:var(--dl)}
 .num span{outline:none;border-bottom:1px dotted transparent;min-width:1ch;display:inline-block;cursor:text}
 .num span:hover,.num span:focus{border-bottom-color:var(--zw)}
 @keyframes verschijn{to{opacity:1}}
-.seamp{left:1292px;top:770px;width:138px;height:138px}
-.remp{left:74px;top:756px;width:146px;height:146px}
+.seamp{left:1206px;top:931px;width:236px;height:236px}
+.remp{left:56px;top:917px;width:250px;height:250px}
 .swap .h{position:absolute;inset:0;opacity:0;transition:opacity .2s}
 .swap .naad{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .2s}
 .swap .naad circle{fill:none;stroke:var(--wit);stroke-width:9;stroke-dasharray:22 15;transform-origin:250px 250px;animation:draai 9s linear infinite;animation-play-state:paused}
@@ -112,19 +118,22 @@ img{display:block}
 .swap:hover{transform:scale(1.04)}
 
 /* pagina 6: maken */
-.h40{position:absolute;margin:0;font-family:var(--fine);font-weight:700;font-size:40px;line-height:1;white-space:nowrap}
-.tiles5{position:absolute;left:82px;top:224px;display:flex;gap:27px}
+.h40{position:absolute;margin:0;font-family:var(--fine);font-weight:700;font-size:var(--t-titel);line-height:1;white-space:nowrap}
+.tiles5{position:absolute;left:48px;top:410px;display:flex;gap:27px}
 .tiles5 .pt5{width:150px;height:179px;background:var(--grijs);display:flex;align-items:center;justify-content:center;padding:14px}
 .tiles5 svg{width:100%;height:100%}
-.dl{position:absolute;left:836px;top:166px;width:104px;height:26px;background:var(--rood);color:var(--wit);font-size:11px;letter-spacing:0;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
+.dl{position:absolute;left:802px;top:352px;width:104px;height:26px;background:var(--rood);color:var(--wit);font-size:var(--t-tekst);letter-spacing:0;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
 .dl:hover{background:var(--zw)}
 .dl.bezig{opacity:.6;pointer-events:none}
-.matbox{position:absolute;left:1021px;top:100px;width:409px;height:482px}
-.matbox ul{list-style:none;margin:0;padding:0;position:absolute;left:38px;top:130px;width:330px}
-.matbox li{position:relative;height:44px;padding-left:37px;font-size:12px;line-height:1.25;display:flex;align-items:flex-start;padding-top:3px}
-.matbox li::before{content:"";position:absolute;left:0;top:0;width:23px;height:23px;border-radius:50%;background:var(--rood)}
-.steps{position:absolute;left:205px;top:626px;list-style:none;margin:0;padding:0;width:760px}
-.steps li{position:absolute;left:0;display:flex;align-items:center;gap:18px;font-size:12px;line-height:1.3;cursor:pointer;width:760px}
+.matbox{position:absolute;left:978px;top:127px;width:427px}
+.matbox .h40{position:static;text-align:center;margin-bottom:12px}
+.matbox ul{list-style:none;margin:0;padding:0;border-top:2px solid var(--zw)}
+.matbox li{position:relative;min-height:46px;padding:15px 10px 13px 84px;font-size:var(--t-tekst);line-height:1.3;border-bottom:2px solid var(--zw)}
+.matbox li::before{content:"";position:absolute;left:47px;top:12px;width:23px;height:23px;border-radius:50%;background:var(--rood)}
+.stapbox{position:absolute;left:125px;top:724px;width:1269px}
+.stapbox .h40{position:static;margin:0 0 5px 45px}
+.steps{list-style:none;margin:0;padding:0;border-top:2px solid var(--zw)}
+.steps li{display:flex;align-items:center;gap:18px;min-height:68px;padding:12px 0 12px 46px;font-size:var(--t-tekst);line-height:1.3;cursor:pointer;border-bottom:2px solid var(--zw)}
 .steps .vk{flex:none;width:37px;height:37px;border:4px solid var(--rood);background:var(--wit);display:flex;align-items:center;justify-content:center;transition:background .15s}
 .steps .vk svg{width:22px;height:22px;opacity:0;transition:opacity .15s}
 .steps li.ok .vk svg{opacity:1}
@@ -135,7 +144,7 @@ img{display:block}
 #phone{position:fixed;inset:0;overflow:hidden}
 .fp{position:absolute;inset:0;background:var(--wit)}
 .fp.dark{background:var(--zw)}
-.ph-mm{left:max(46px,env(safe-area-inset-left));top:calc(33px + env(safe-area-inset-top));font-size:40px}
+.ph-mm{left:max(20px,env(safe-area-inset-left));top:calc(30px + env(safe-area-inset-top));font-size:85px;line-height:97px}
 .mic{position:absolute;left:50%;top:50%;width:min(86vw,58vh);aspect-ratio:1;transform:translate(-50%,-46%);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .mic img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:opacity .15s}
 .mic .w{opacity:0}
@@ -143,9 +152,9 @@ img{display:block}
 .mic svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .mic .ringd{fill:none;stroke:var(--wit);stroke-width:9;stroke-dasharray:30 20;stroke-linecap:butt}
 .mic .ringv{fill:none;stroke:var(--rood);stroke-width:6;stroke-linejoin:round}
-.len{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:234px;margin-top:-30px}
-.len label{display:block;font-family:var(--tw);font-size:14px;color:var(--wit);margin-bottom:20px}
-.len input{width:234px;height:67px;border:0;border-radius:12px;background:var(--grijs);font-family:var(--tw);font-size:28px;text-align:center;color:var(--zw);outline:none;-webkit-appearance:none;appearance:none}
+.len{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(380px,calc(100vw - 22px));margin-top:-15px}
+.len label{display:block;text-align:center;font-family:var(--tw);font-size:var(--t-sub);color:var(--wit);margin-bottom:36px}
+.len input{width:100%;height:112px;border:0;border-radius:25px;background:var(--grijs);font-family:var(--tw);font-size:var(--t-titel);text-align:center;color:var(--zw);outline:none;-webkit-appearance:none;appearance:none}
 .len input:focus{box-shadow:0 0 0 3px var(--rood)}
 .camicon{position:absolute;left:50%;top:50%;width:227px;height:227px;transform:translate(-50%,-50%)}
 .camicon img{width:100%;height:100%}
@@ -174,19 +183,19 @@ img{display:block}
     <div class="grid" id="grid"></div>
   </div></section>
 
-  <section class="page fit" id="pDetail" data-k="fit" hidden><div class="stage">
+  <section class="page" id="pDetail" data-k="w" hidden><div class="stage lang">
     <div class="mm desk-mm" data-home>M<i>M</i></div>
-    <div class="descbox"><h2 id="dInv"></h2><p id="dDesc"></p></div>
-    <div class="medbox" id="medbox"><h3>Materiaal</h3><ul id="dMed"></ul></div>
+    <div class="band"></div>
+    <div class="links" id="links"><h2 id="dInv"></h2><p id="dDesc"></p><button class="leesmeer" id="leesMeer" hidden>Lees meer</button></div>
+    <div class="rechts"><section id="sMed"><h3>Medium</h3><ul id="dMed"></ul></section><section id="sPid"><h3>PID</h3><div class="v" id="dPid"></div></section><section id="sLoc"><h3>Container or Location</h3><div class="v" id="dLoc"></div></section><section id="sDim"><h3>Dimensions</h3><div class="v" id="dDim"></div></section></div>
     <div class="zoom"><div class="zoomwin" id="zoomwin"><img id="dImg" alt=""></div></div>
     <button class="patch pin" id="pinIt" aria-label="Pin it">
-      <img src="patch-red.png" alt="">
-      <svg class="pt" viewBox="0 0 141 141" aria-hidden="true">
-        <g stroke="#b9b9b9" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="17 6">
-          <path d="M64 6 L5 69"/><path d="M75 5 L136 66"/><path d="M134 75 L76 137"/><path d="M5 78 L64 137"/>
-        </g>
-        <g class="kop"><circle cx="64.5" cy="5.5" r="4.3"/><circle cx="137" cy="66" r="4.3"/><circle cx="134" cy="75.5" r="4.3"/><circle cx="5" cy="78" r="4.3"/></g>
-        <g transform="rotate(-14 70 70)"><text class="txt" x="28" y="66">PIN</text><text class="txt" x="74" y="99">IT</text></g>
+      <img src="pin.png" alt=""><img class="h" src="pin-h.png" alt="">
+      <svg class="pins" viewBox="0 0 141 141" aria-hidden="true">
+        <g style="--x:14px;--y:-22px"><path d="M64 6 L52 19 M45 27 L30 43" stroke="#b9b9b9" stroke-width="1.4" stroke-linecap="round"/><circle cx="64.5" cy="5.5" r="4.6" fill="#121428"/></g>
+        <g style="--x:22px;--y:12px"><path d="M137 66 L124 53 M117 46 L104 33" stroke="#b9b9b9" stroke-width="1.4" stroke-linecap="round"/><circle cx="137" cy="66" r="4.6" fill="#121428"/></g>
+        <g style="--x:20px;--y:16px"><path d="M134 76 L121 90 M114 97 L100 112" stroke="#b9b9b9" stroke-width="1.4" stroke-linecap="round"/><circle cx="134" cy="75.5" r="4.6" fill="#121428"/></g>
+        <g style="--x:-22px;--y:10px"><path d="M5 78 L18 91 M25 98 L40 113" stroke="#b9b9b9" stroke-width="1.4" stroke-linecap="round"/><circle cx="5" cy="78" r="4.6" fill="#121428"/></g>
       </svg>
     </button>
   </div></section>
@@ -197,10 +206,10 @@ img{display:block}
     <div class="bar"><div class="fill" id="fill"></div></div>
   </div></section>
 
-  <section class="page fit" id="pResult" data-k="fit" hidden><div class="stage">
+  <section class="page" id="pResult" data-k="w" hidden><div class="stage lang">
     <div class="mm desk-mm" data-home>M<i>M</i></div>
     <div class="foto"><img id="rImg" alt="Jouw foto"></div>
-    <svg class="meet" id="meet" viewBox="0 0 1512 982"></svg>
+    <svg class="meet" id="meet" viewBox="0 0 1512 1247"></svg>
     <div id="labels"></div>
     <button class="patch swap remp" id="remeasure" aria-label="Remeasure">
       <img src="remeasure.png" alt=""><img class="h" src="remeasure-h.png" alt="">
@@ -212,14 +221,13 @@ img{display:block}
     </button>
   </div></section>
 
-  <section class="page fit" id="pMake" data-k="fit" hidden><div class="stage">
+  <section class="page" id="pMake" data-k="w" hidden><div class="stage lang">
     <div class="mm desk-mm" data-home>M<i>M</i></div>
-    <h2 class="h40" style="left:77px;top:138px">PATRONEN</h2>
+    <h2 class="h40" style="left:43px;top:324px">PATRONEN</h2>
     <button class="dl" id="dl">DOWNLOAD</button>
     <div class="tiles5" id="tiles5"></div>
-    <div class="matbox"><h2 class="h40" style="left:50px;top:23px">Materiaallijst</h2><ul id="mat"></ul></div>
-    <h2 class="h40" style="left:204px;top:538px">STAPPENPLAN</h2>
-    <ol class="steps" id="steps"></ol>
+    <div class="matbox"><h2 class="h40">Materiaallijst</h2><ul id="mat"></ul></div>
+    <div class="stapbox"><h2 class="h40">STAPPENPLAN</h2><ol class="steps" id="steps"></ol></div>
   </div></section>
 </main>
 
@@ -680,11 +688,18 @@ function startDesk(){
   /* ---- detail ---- */
   function openItem(i){
     item=i;const it=COLL[i];
-    $("dInv").textContent=it.i;$("dDesc").textContent=it.t||"";$("dMed").innerHTML=(it.m||[]).map(x=>`<li>${esc(x)}</li>`).join("");$("medbox").hidden=!(it.m||[]).length;
+    $("dInv").textContent=it.i;$("dDesc").textContent=it.t||"";
+    $("dMed").innerHTML=(it.m||[]).map(x=>`<li>${esc(x)}</li>`).join("");$("sMed").hidden=!(it.m||[]).length;
+    $("dPid").textContent=it.pid||"";$("sPid").hidden=!it.pid;
+    $("dLoc").textContent=it.loc||"";$("sLoc").hidden=!it.loc;
+    $("dDim").innerHTML=(it.dim||[]).map(esc).join("<br>");$("sDim").hidden=!(it.dim||[]).length;
+    $("links").classList.remove("open");$("leesMeer").textContent="Lees meer";
     const img=$("dImg");img.src=fotoOf(i);img.alt=it.n;
     $("pinIt").hidden=!it.k;
     show("detail");fitZoom();
+    const pp=$("dDesc");$("leesMeer").hidden=pp.scrollHeight<=pp.clientHeight+2;
   }
+  $("leesMeer").addEventListener("click",()=>{const o=$("links").classList.toggle("open");$("leesMeer").textContent=o?"Lees minder":"Lees meer"});
   function fitZoom(){const img=$("dImg"),w=$("zoomwin");const go=()=>{const r=Math.min(463/img.naturalWidth,617/img.naturalHeight);w.style.width=img.naturalWidth*r+"px";w.style.height=img.naturalHeight*r+"px"};if(img.complete&&img.naturalWidth)go();else img.onload=go}
   const zw=$("zoomwin");
   zw.addEventListener("pointermove",e=>{const r=zw.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;zw.querySelector("img").style.transformOrigin=`${x}% ${y}%`;zw.classList.add("on")});
@@ -718,13 +733,13 @@ function startDesk(){
     jas:["arm","schouder","borst","heup"],jurk:["arm","schouder","borst","heup"],top:["arm","schouder","borst"],cape:["schouder","borst"],
     schort:["borst","heup"],kraag:["schouder"],mouw:["arm"],lijf:["borst","heup"],das:["schouder"],doek:["schouder"],klein:["heup"]};
   const LABELS=[
-    {k:"arm",t:"ArmLengte",y:186,side:"L"},
-    {k:"borst",t:"Borstomtrek",y:386,side:"L"},
-    {k:"schouder",t:"Schouderbreedte",y:195,side:"R"},
-    {k:"heup",t:"Heupomtrek",y:381,side:"R"},
-    {k:"been",t:"Beenlengte",y:782,side:"R"}];
+    {k:"arm",t:"ArmLengte",y:326,side:"L"},
+    {k:"borst",t:"Borstomtrek",y:526,side:"L"},
+    {k:"schouder",t:"Schouderbreedte",y:335,side:"R"},
+    {k:"heup",t:"Heupomtrek",y:521,side:"R"},
+    {k:"been",t:"Beenlengte",y:922,side:"R"}];
   function drawMeasures(){
-    const g=meting.geo,X=v=>461+v*485,Y=v=>148+v*754,P=q=>[X(q[0]),Y(q[1])];
+    const g=meting.geo,X=v=>481+v*485,Y=v=>288+v*754,P=q=>[X(q[0]),Y(q[1])];
     const need=NODIG[soort(COLL[item].n)]||["arm","schouder","borst","heup","been"];
     const lines={
       schouder:[[X(g.sh[0]),Y(g.sh[2])],[X(g.sh[1]),Y(g.sh[2])]],
@@ -741,12 +756,12 @@ function startDesk(){
       const dl=(.3+n*.35).toFixed(2)+"s",dl2=(.6+n*.35).toFixed(2)+"s",ln=lines[L.k];
       const le=$("labels").querySelector(`[data-l="${L.k}"]`),ne=$("labels").querySelector(`[data-n="${L.k}"]`);
       const lw=le.offsetWidth,nw=Math.max(ne.offsetWidth,52),GAP=26;
-      if(L.side==="L"){const lx=430-lw;le.style.left=lx+"px";ne.style.left=(lx-GAP-nw)+"px"}
-      else{const lx=978;le.style.left=lx+"px";ne.style.left=(lx+lw+GAP)+"px"}
+      if(L.side==="L"){const lx=450-lw;le.style.left=lx+"px";ne.style.left=(lx-GAP-nw)+"px"}
+      else{const lx=998;le.style.left=lx+"px";ne.style.left=(lx+lw+GAP)+"px"}
       [le,ne].forEach(e=>e.style.setProperty("--dl",dl2));
       if(ln)svg+=`<path class="ml" d="M${ln.map(q=>q[0].toFixed(1)+" "+q[1].toFixed(1)).join(" L")}" style="opacity:0;animation:verschijn .5s ${dl} forwards,mars 1.6s linear infinite"/>`;
       const uy=L.y+21,t=tgt[L.k];
-      const pts=L.side==="L"?[[430-lw-GAP-nw,uy],[440,uy]]:[[978+lw+GAP+nw,uy],[968,uy]];
+      const pts=L.side==="L"?[[450-lw-GAP-nw,uy],[460,uy]]:[[998+lw+GAP+nw,uy],[988,uy]];
       if(t)pts.push(t);
       const d="M"+pts.map(q=>q[0].toFixed(1)+" "+q[1].toFixed(1)).join(" L");
       let len=0;for(let i=1;i<pts.length;i++)len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
@@ -768,7 +783,7 @@ function startDesk(){
     $("tiles5").innerHTML=curPat.delen.slice(0,5).map(([lib,naam])=>`<div class="pt5" title="${esc(naam)}">${pieceSVG(lib)}</div>`).join("");
     $("mat").innerHTML=curPat.mat.map(t=>`<li>${esc(t)}</li>`).join("");
     const Ys=[626,676,730,785,839,889];
-    $("steps").innerHTML=curPat.stappen.map((t,i)=>`<li style="top:${Ys[i]-626}px"><span class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="square"><path d="M4 12.5l5 5L20 6"/></svg></span><span>${esc(t)}</span></li>`).join("");
+    $("steps").innerHTML=curPat.stappen.map((t,i)=>`<li><span class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="square"><path d="M4 12.5l5 5L20 6"/></svg></span><span>${esc(t)}</span></li>`).join("");
   }
   $("steps").addEventListener("click",e=>{const li=e.target.closest("li");if(li)li.classList.toggle("ok")});
   $("dl").addEventListener("click",async()=>{
