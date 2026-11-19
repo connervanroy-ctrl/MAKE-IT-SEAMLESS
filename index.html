@@ -69,29 +69,31 @@ img{display:block}
 @keyframes inkom{from{opacity:0;transform:translateY(8px)}}
 
 /* pagina 3: detail */
-.band{position:absolute;left:0;top:299px;width:1512px;height:521px;border:2px solid var(--zw);pointer-events:none}
-.links{position:absolute;left:0;top:299px;width:495px;min-height:521px;border:2px solid var(--zw);background:var(--wit);padding:75px 56px 70px 47px;z-index:3}
-.links h2,.rechts h3{margin:0 0 16px;font-family:var(--tw);font-weight:400;font-size:var(--t-sub);line-height:1.15}
-.links p{margin:0;font-size:var(--t-tekst);line-height:1.55;max-height:362px;overflow:hidden}
+.band{position:absolute;left:0;top:233px;width:1512px;height:521px;border:2px solid var(--zw);pointer-events:none}
+.links{position:absolute;left:0;top:233px;width:495px;min-height:521px;border:2px solid var(--zw);background:var(--wit);padding:58px 56px 140px 47px;z-index:3}
+.links h2{margin:0 0 13px;font-family:var(--tw);font-weight:400;font-size:var(--t-sub);line-height:1.15}
+.rechts h3{margin:0 0 5px;font-family:var(--tw);font-weight:400;font-size:var(--t-sub);line-height:1.15}
+.links p{margin:0;font-size:var(--t-tekst);line-height:1.55;max-height:280px;overflow:hidden}
 .links.open p{max-height:none}
-.leesmeer{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-family:var(--tw);font-size:var(--t-sub)}
+.links.open .leesmeer{bottom:40px}
+.leesmeer{position:absolute;left:0;right:0;bottom:104px;text-align:center;font-family:var(--tw);font-size:var(--t-sub)}
 .leesmeer:hover{color:var(--rood)}
-.rechts{position:absolute;left:1017px;top:299px;width:495px;height:521px;border:2px solid var(--zw);padding:65px 30px 30px 86px;overflow:hidden}
+.rechts{position:absolute;left:1017px;top:233px;width:495px;height:521px;border:2px solid var(--zw);padding:65px 30px 30px 86px;overflow:hidden}
 .rechts section{margin-bottom:22px}
 .rechts .v{font-size:var(--t-tekst);line-height:1.5}
 .rechts ul{list-style:none;margin:0;padding:0 0 0 4px;font-size:var(--t-tekst);line-height:1.5}
 .rechts li::before{content:"\00B0";margin-right:6px}
-.zoom{position:absolute;left:524px;top:266px;width:463px;height:617px;display:flex;align-items:center;justify-content:center;z-index:2}
+.zoom{position:absolute;left:524px;top:216px;width:463px;height:617px;display:flex;align-items:center;justify-content:center;z-index:2}
 .zoomwin{position:relative;overflow:hidden;cursor:zoom-in;max-width:100%;max-height:100%;background:var(--wit)}
 .zoomwin img{width:100%;height:100%;transition:transform .25s ease-out;transform-origin:50% 50%}
 .zoomwin.on img{transform:scale(2.4)}
 .patch{position:absolute;display:block;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .patch img{width:100%;height:100%}
-.pin{left:654px;top:930px;width:234px;height:234px}
+.pin{left:1216px;top:33px;width:180px;height:180px}
 /* PIN IT: de vier spelden prikken één voor één in de patch (eindbeeld = RED_PATCH_PIN_IT_W) */
 .pin .pc{position:absolute;left:-2.97%;top:-3.57%;width:106.27%;height:106.27%;pointer-events:none}
 .pin .pc img{position:absolute;inset:0;width:100%;height:100%}
-.pin .sp{opacity:0;transform:translate(calc(var(--x)*46px),calc(var(--y)*46px));transition:transform .38s cubic-bezier(.2,.7,.3,1),opacity .15s}
+.pin .sp{opacity:0;transform:translate(calc(var(--x)*36px),calc(var(--y)*36px));transition:transform .38s cubic-bezier(.2,.7,.3,1),opacity .15s}
 .pin:hover .sp,.pin.vast .sp{opacity:1;transform:none}
 .pin:hover .sp:nth-of-type(3){transition-delay:.18s}.pin:hover .sp:nth-of-type(4){transition-delay:.36s}.pin:hover .sp:nth-of-type(5){transition-delay:.54s}
 
@@ -115,8 +117,8 @@ img{display:block}
 .num span{outline:none;border-bottom:1px dotted transparent;min-width:1ch;display:inline-block;cursor:text}
 .num span:hover,.num span:focus{border-bottom-color:var(--zw)}
 @keyframes verschijn{to{opacity:1}}
-.seamp{left:1206px;top:931px;width:236px;height:236px}
-.remp{left:56px;top:917px;width:250px;height:250px}
+.seamp{left:1265px;top:147px;width:159px;height:159px}
+.remp{left:1113px;top:24px;width:159px;height:159px}
 .swap .h{position:absolute;inset:0;opacity:0;transition:opacity .2s}
 .swap .naad{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .2s}
 .swap .naad circle{fill:none;stroke:var(--wit);stroke-width:9;stroke-dasharray:22 15;transform-origin:250px 250px;animation:draai 9s linear infinite;animation-play-state:paused}
@@ -192,7 +194,7 @@ img{display:block}
     <div class="grid" id="grid"></div>
   </div></section>
 
-  <section class="page" id="pDetail" data-k="w" hidden><div class="stage lang">
+  <section class="page fit" id="pDetail" data-k="fit" hidden><div class="stage">
     <div class="mm desk-mm" data-home>M<i>M</i></div>
     <div class="band"></div>
     <div class="links" id="links"><h2 id="dInv"></h2><p id="dDesc"></p><button class="leesmeer" id="leesMeer" hidden>Lees meer</button></div>
