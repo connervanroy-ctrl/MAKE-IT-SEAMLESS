@@ -697,12 +697,12 @@ function startDesk(){
     link.onState(onPhone);link.onFoto(onFoto);
     link.set({page:"qr",item:null,remeasures:0});
   }
-  const ringItems=(()=>{const pick=[],seen=new Set();for(const it of COLL){if(!seen.has(it.n)&&pick.length<12){seen.add(it.n);pick.push(it)}}return pick})();
+  const ringItems=(()=>{const pick=[],seen=new Set();for(const it of COLL){if(!seen.has(it.n)&&pick.length<16){seen.add(it.n);pick.push(it)}}return pick})();
   $("ring").innerHTML=ringItems.map(it=>`<figure><img data-i="${COLL.indexOf(it)}" alt=""></figure>`).join("");
   const figs=[...$("ring").children];let ringRaf=0,ringT0=performance.now();
   function ringStep(t){
     const a0=(t-ringT0)/1000*(2*Math.PI/160);/* één toer per 160 s */
-    figs.forEach((f,i)=>{const a=a0+i*2*Math.PI/figs.length-Math.PI/2;const x=756+Math.cos(a)*560-118,y=670+Math.sin(a)*560-118;f.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`});
+    figs.forEach((f,i)=>{const a=a0+i*2*Math.PI/figs.length-Math.PI/2;const x=756+Math.cos(a)*720-118,y=960+Math.sin(a)*720-118;f.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`});
     ringRaf=requestAnimationFrame(ringStep);
   }
   function startRing(){cancelAnimationFrame(ringRaf);ringRaf=requestAnimationFrame(ringStep)}
