@@ -278,7 +278,7 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 const fmt=n=>String(Math.round(n*2)/2).replace(".",",");
 const H=location.hash.match(/^#t-([a-z0-9]{4,8})$/);
 const ROLE=H?"telefoon":"desk";
-const VERSIE="28";/* telefoon haalt via de QR-code altijd deze versie op, niet een oude uit het geheugen */
+const VERSIE="29";/* telefoon haalt via de QR-code altijd deze versie op, niet een oude uit het geheugen */
 const ALPHA="abcdefghjkmnpqrstuvwxyz23456789";
 const newCode=()=>{let c="";for(let i=0;i<5;i++)c+=ALPHA[Math.floor(Math.random()*ALPHA.length)];return c};
 
@@ -873,7 +873,7 @@ function startDesk(){
     lastAct=Date.now();
     if(!phoneSeen){phoneSeen=true;if(page==="qr")show("grid")}
     grid.classList.toggle("zoekt",!!p.speaking&&(page==="grid"));
-    if(p.speaking&&page==="detail")show("grid",{keepScroll:false});
+    /* niet meer terug naar het raster zodra iemand begint te spreken: pas als er echt een zoekopdracht binnenkomt (anders werkt "Hey MoMu pin it" niet) */
     if(p.cid&&p.cid!==lastCid){lastCid=p.cid;voerUit(p.cmd,p.arg)}
     if(p.qid&&p.qid!==lastQid){lastQid=p.qid;if(page!=="grid")show("grid");applyFilter(find(p.q));scrollTo({top:0,behavior:"smooth"})}
     if(p.lengte)M.lengte=p.lengte;
