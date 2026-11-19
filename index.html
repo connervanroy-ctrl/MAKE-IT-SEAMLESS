@@ -104,7 +104,7 @@ img{display:block}
 @keyframes streep{to{background-position:73.5px 0}}
 
 /* pagina 5: resultaat */
-.foto{position:absolute;left:539px;top:252px;width:371px;height:576px;background:#e9e9e9;overflow:hidden}
+.foto{position:absolute;left:502px;top:194px;width:445px;height:691px;background:#e9e9e9;overflow:hidden}
 .foto img{width:100%;height:100%;object-fit:cover}
 .meet{position:absolute;inset:0;width:1512px;height:982px;pointer-events:none}
 .meet .ml{stroke:var(--rood);stroke-width:4;fill:none;stroke-dasharray:12 9;animation:mars 1.6s linear infinite}
@@ -155,7 +155,8 @@ img{display:block}
 .fp{position:absolute;inset:0;background:var(--wit)}
 .fp.dark{background:var(--zw)}
 .ph-mm{left:max(20px,env(safe-area-inset-left));top:calc(30px + env(safe-area-inset-top));font-size:85px;line-height:97px}
-.mic{position:absolute;left:50%;top:50%;width:min(86vw,58vh);aspect-ratio:1;transform:translate(-50%,-46%);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.ph-mm i{color:inherit}
+.mic{position:absolute;left:50%;top:55.7%;width:min(86vw,58vh);aspect-ratio:1;transform:translate(-50%,-50%);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .mic img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:opacity .15s}
 .mic .w{opacity:0}
 .mic.druk .w{opacity:1}.mic.druk .r{opacity:0}
@@ -168,7 +169,7 @@ img{display:block}
 .len input:focus{box-shadow:0 0 0 3px var(--rood)}
 .camicon{position:absolute;left:50%;top:50%;width:227px;height:227px;transform:translate(-50%,-50%)}
 .camicon img{width:100%;height:100%}
-.camlive{position:absolute;inset:0;background:var(--zw)}
+.camlive{position:absolute;left:0;right:0;bottom:0;top:calc(140px + env(safe-area-inset-top));background:var(--zw)}
 .camlive video,.camlive canvas,.camlive .still{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .camlive .spiegel{transform:scaleX(-1)}
 .silh{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -276,7 +277,7 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 const fmt=n=>String(Math.round(n*2)/2).replace(".",",");
 const H=location.hash.match(/^#t-([a-z0-9]{4,8})$/);
 const ROLE=H?"telefoon":"desk";
-const VERSIE="26";/* telefoon haalt via de QR-code altijd deze versie op, niet een oude uit het geheugen */
+const VERSIE="27";/* telefoon haalt via de QR-code altijd deze versie op, niet een oude uit het geheugen */
 const ALPHA="abcdefghjkmnpqrstuvwxyz23456789";
 const newCode=()=>{let c="";for(let i=0;i<5;i++)c+=ALPHA[Math.floor(Math.random()*ALPHA.length)];return c};
 
@@ -791,13 +792,13 @@ function startDesk(){
     jas:["arm","schouder","borst","heup"],jurk:["arm","schouder","borst","heup"],top:["arm","schouder","borst"],cape:["schouder","borst"],
     schort:["borst","heup"],kraag:["schouder"],mouw:["arm"],lijf:["borst","heup"],das:["schouder"],doek:["schouder"],klein:["heup"]};
   const LABELS=[
-    {k:"arm",t:"Armlengte",y:284,side:"L"},
-    {k:"borst",t:"Borstomtrek",y:455,side:"L"},
-    {k:"schouder",t:"Schouderbreedte",y:282,side:"R"},
-    {k:"heup",t:"Heupomtrek",y:402,side:"R"},
-    {k:"been",t:"Beenlengte",y:736,side:"R"}];
+    {k:"arm",t:"Armlengte",y:233,side:"L"},
+    {k:"borst",t:"Borstomtrek",y:438,side:"L"},
+    {k:"schouder",t:"Schouderbreedte",y:230,side:"R"},
+    {k:"heup",t:"Heupomtrek",y:374,side:"R"},
+    {k:"been",t:"Beenlengte",y:775,side:"R"}];
   function drawMeasures(){
-    const g=meting.geo,X=v=>539+v*371,Y=v=>252+v*576,P=q=>[X(q[0]),Y(q[1])];
+    const g=meting.geo,X=v=>502+v*445,Y=v=>194+v*691,P=q=>[X(q[0]),Y(q[1])];
     const need=NODIG[soort(COLL[item].n)]||["arm","schouder","borst","heup","been"];
     const lines={
       schouder:[[X(g.sh[0]),Y(g.sh[2])],[X(g.sh[1]),Y(g.sh[2])]],
@@ -814,12 +815,12 @@ function startDesk(){
       const dl=(.3+n*.35).toFixed(2)+"s",dl2=(.6+n*.35).toFixed(2)+"s",ln=lines[L.k];
       const le=$("labels").querySelector(`[data-l="${L.k}"]`),ne=$("labels").querySelector(`[data-n="${L.k}"]`);
       const lw=le.offsetWidth,nw=Math.max(ne.offsetWidth,52),GAP=26;
-      if(L.side==="L"){const lx=508-lw;le.style.left=lx+"px";ne.style.left=(lx-GAP-nw)+"px"}
-      else{const lx=941;le.style.left=lx+"px";ne.style.left=(lx+lw+GAP)+"px"}
+      if(L.side==="L"){const lx=471-lw;le.style.left=lx+"px";ne.style.left=(lx-GAP-nw)+"px"}
+      else{const lx=978;le.style.left=lx+"px";ne.style.left=(lx+lw+GAP)+"px"}
       [le,ne].forEach(e=>e.style.setProperty("--dl",dl2));
       if(ln)svg+=`<path class="ml" d="M${ln.map(q=>q[0].toFixed(1)+" "+q[1].toFixed(1)).join(" L")}" style="opacity:0;animation:verschijn .5s ${dl} forwards,mars 1.6s linear infinite"/>`;
       const uy=L.y+21,t=tgt[L.k];
-      const pts=L.side==="L"?[[508-lw-GAP-nw,uy],[518,uy]]:[[941+lw+GAP+nw,uy],[931,uy]];
+      const pts=L.side==="L"?[[471-lw-GAP-nw,uy],[481,uy]]:[[978+lw+GAP+nw,uy],[968,uy]];
       if(t)pts.push(t);
       const d="M"+pts.map(q=>q[0].toFixed(1)+" "+q[1].toFixed(1)).join(" L");
       let len=0;for(let i=1;i<pts.length;i++)len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
