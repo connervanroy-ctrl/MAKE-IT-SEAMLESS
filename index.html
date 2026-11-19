@@ -32,7 +32,8 @@ img{display:block}
 .stage.lang{height:1247px}
 
 /* pagina 1: QR + carrousel */
-.ring{position:absolute;inset:0}
+.ring{position:absolute;inset:0;overflow:hidden}
+.fit .stage{overflow:visible}
 .ring figure{position:absolute;margin:0;width:236px;height:236px;display:flex;align-items:center;justify-content:center;will-change:transform}
 .ring img{max-width:100%;max-height:100%;object-fit:contain}
 .qr{position:absolute;left:588px;top:453px;width:407px;height:434px;display:flex;align-items:center;justify-content:center;background:var(--wit);z-index:3}
@@ -79,13 +80,12 @@ img{display:block}
 .patch{position:absolute;display:block;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .patch img{width:100%;height:100%}
 .pin{left:654px;top:930px;width:234px;height:234px}
-.pin .h{position:absolute;inset:0;opacity:0;transition:opacity .3s ease-in}
-.pin:hover{transform:scale(1.05)}
-.pin:hover .h{opacity:1}
-.pin .pins{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.pin .pins g{opacity:0;transition:transform .45s cubic-bezier(.3,1.4,.5,1),opacity .2s;transform:translate(var(--x),var(--y))}
-.pin:hover .pins g{opacity:1;transform:translate(0,0)}
-.pin:hover .pins g:nth-child(2){transition-delay:.06s}.pin:hover .pins g:nth-child(3){transition-delay:.12s}.pin:hover .pins g:nth-child(4){transition-delay:.18s}
+/* PIN IT: de vier spelden prikken één voor één in de patch (eindbeeld = RED_PATCH_PIN_IT_W) */
+.pin .pc{position:absolute;left:-2.97%;top:-3.57%;width:106.27%;height:106.27%;pointer-events:none}
+.pin .pc img{position:absolute;inset:0;width:100%;height:100%}
+.pin .sp{opacity:0;transform:translate(calc(var(--x)*46px),calc(var(--y)*46px));transition:transform .38s cubic-bezier(.2,.7,.3,1),opacity .15s}
+.pin:hover .sp,.pin.vast .sp{opacity:1;transform:none}
+.pin:hover .sp:nth-of-type(3){transition-delay:.18s}.pin:hover .sp:nth-of-type(4){transition-delay:.36s}.pin:hover .sp:nth-of-type(5){transition-delay:.54s}
 
 /* pagina 4: laden */
 .pct{position:absolute;left:0;right:0;top:363px;text-align:center;font-family:var(--tw);font-size:var(--t-titel);color:var(--wit);font-variant-numeric:tabular-nums}
@@ -190,13 +190,8 @@ img{display:block}
     <div class="rechts"><section id="sMed"><h3>Medium</h3><ul id="dMed"></ul></section><section id="sPid"><h3>PID</h3><div class="v" id="dPid"></div></section><section id="sLoc"><h3>Container or Location</h3><div class="v" id="dLoc"></div></section><section id="sDim"><h3>Dimensions</h3><div class="v" id="dDim"></div></section></div>
     <div class="zoom"><div class="zoomwin" id="zoomwin"><img id="dImg" alt=""></div></div>
     <button class="patch pin" id="pinIt" aria-label="Pin it">
-      <img src="pin.png" alt=""><img class="h" src="pin-h.png" alt="">
-      <svg class="pins" viewBox="0 0 141 141" aria-hidden="true">
-        <g style="--x:14px;--y:-22px"><path d="M64 6 L52 19 M45 27 L30 43" stroke="#b9b9b9" stroke-width="1.4" stroke-linecap="round"/><circle cx="64.5" cy="5.5" r="4.6" fill="#121428"/></g>
-        <g style="--x:22px;--y:12px"><path d="M137 66 L124 53 M117 46 L104 33" stroke="#b9b9b9" stroke-width="1.4" stroke-linecap="round"/><circle cx="137" cy="66" r="4.6" fill="#121428"/></g>
-        <g style="--x:20px;--y:16px"><path d="M134 76 L121 90 M114 97 L100 112" stroke="#b9b9b9" stroke-width="1.4" stroke-linecap="round"/><circle cx="134" cy="75.5" r="4.6" fill="#121428"/></g>
-        <g style="--x:-22px;--y:10px"><path d="M5 78 L18 91 M25 98 L40 113" stroke="#b9b9b9" stroke-width="1.4" stroke-linecap="round"/><circle cx="5" cy="78" r="4.6" fill="#121428"/></g>
-      </svg>
+      <span class="pc"><img src="pin-base.png" alt="">
+        <img class="sp" src="pin-p1.png" alt="" style="--x:.87;--y:-.493"><img class="sp" src="pin-p2.png" alt="" style="--x:.579;--y:.815"><img class="sp" src="pin-p3.png" alt="" style="--x:-.552;--y:-.834"><img class="sp" src="pin-p4.png" alt="" style="--x:-.807;--y:.59"></span>
     </button>
   </div></section>
 
@@ -641,6 +636,9 @@ function startDesk(){
     const cur=$(pages[page]),st=cur.querySelector(".stage");
     const k=cur.dataset.k==="w"?innerWidth/1512:Math.min(innerWidth/1512,innerHeight/982);
     st.style.zoom=k;
+    /* op pagina's die in het scherm passen staat het MM-logo toch links, net als op de andere pagina's */
+    const mm=st.querySelector(".desk-mm");
+    if(mm){if(cur.dataset.k==="w"){mm.style.left="";mm.style.top=""}else{const offX=(innerWidth-1512*k)/2,offY=Math.max(0,(innerHeight-982*k)/2);mm.style.left=(42-offX/k)+"px";mm.style.top=(16-offY/k)+"px"}}
   }
   addEventListener("resize",scale);
   function show(p,opts={}){
@@ -704,7 +702,7 @@ function startDesk(){
   const zw=$("zoomwin");
   zw.addEventListener("pointermove",e=>{const r=zw.getBoundingClientRect();const x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;zw.querySelector("img").style.transformOrigin=`${x}% ${y}%`;zw.classList.add("on")});
   zw.addEventListener("pointerleave",()=>zw.classList.remove("on"));
-  $("pinIt").addEventListener("click",()=>{remeasures=0;meting=null;show("load");startLoader()});
+  $("pinIt").addEventListener("click",()=>{const b=$("pinIt");b.classList.add("vast");remeasures=0;meting=null;setTimeout(()=>{b.classList.remove("vast");show("load");startLoader()},650)});
 
   /* ---- laden ---- */
   let lt=null,shown=0,target=0,phoneProg=0,done=false;
