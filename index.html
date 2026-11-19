@@ -635,13 +635,17 @@ function loadPacks(onPack){
 /* Geluiden op de desk (Web Audio: kort en zonder vertraging) */
 const GELUID=(()=>{
   let ctx=null;const buf={},src={klik:"klikker.mp3",meet:"meetlint.mp3",naai:"naaimachine.mp3",laden:"laden.mp3"};
-  function init(){if(ctx)return;try{ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){return}
-    Object.entries(src).forEach(([k,u])=>fetch(u).then(r=>r.arrayBuffer()).then(a=>ctx.decodeAudioData(a)).then(b=>buf[k]=b).catch(()=>{}))}
-  /* browsers laten pas geluid toe na een klik of toets */
-  ["pointerdown","keydown","touchstart"].forEach(ev=>addEventListener(ev,()=>{init();if(ctx&&ctx.state==="suspended")ctx.resume()},{passive:true}));
-  addEventListener("pointermove",()=>{init()},{once:true,passive:true});
+  let klaarRes;const klaar=new Promise(r=>klaarRes=r);
+  function init(){if(ctx)return;try{ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){klaarRes();return}
+    Promise.all(Object.entries(src).map(([k,u])=>fetch(u).then(r=>r.arrayBuffer()).then(a=>ctx.decodeAudioData(a)).then(b=>buf[k]=b).catch(()=>{}))).then(klaarRes)}
+  /* meteen bij het openen laden en klaarzetten (vóór de foto's), zodat elk geluid direct kan spelen */
+  const START={klik:.045,meet:.13,naai:.04,laden:.02};
+  if(ROLE!=="telefoon")init();
+  /* browsers laten pas geluid toe na een klik of toets: dan zetten we het aan */
+  const aan=()=>{init();if(ctx&&ctx.state==="suspended")ctx.resume()};
+  ["pointerdown","keydown","touchstart","pointerup","click"].forEach(ev=>addEventListener(ev,aan,{passive:true,capture:true}));
   function speel(k,{vol=1,fadeNa=0,fade=1.2}={}){if(!ctx||!buf[k]||ctx.state!=="running")return null;
-    const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=buf[k];g.gain.value=vol;s.connect(g).connect(ctx.destination);s.start();
+    const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=buf[k];g.gain.value=vol;s.connect(g).connect(ctx.destination);s.start(0,START[k]||0);
     if(fadeNa){const t=ctx.currentTime+fadeNa;g.gain.setValueAtTime(vol,t);g.gain.linearRampToValueAtTime(0,t+fade);s.stop(t+fade+.05)}
     return{stop(f=.25){try{const t=ctx.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+f);s.stop(t+f+.05)}catch(e){}}}}
   let lastKlik=0;
@@ -651,11 +655,11 @@ const GELUID=(()=>{
   function flikker(aan){
     if(!aan){if(fl){clearTimeout(fl.t);fl.stop();fl=null}return}
     if(fl||!ctx||!buf.laden||ctx.state!=="running")return;
-    const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=buf.laden;s.loop=true;g.gain.value=0;s.connect(g).connect(ctx.destination);s.start();
+    const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=buf.laden;s.loop=true;s.loopStart=START.laden;g.gain.value=0;s.connect(g).connect(ctx.destination);s.start(0,START.laden);
     fl={t:0,stop(){const t=ctx.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+.15);s.stop(t+.2)}};
     const tik=()=>{if(!fl)return;const t=ctx.currentTime,aanUit=Math.random()<.62;g.gain.setTargetAtTime(aanUit?.75:0,t,.008);fl.t=setTimeout(tik,45+Math.random()*150)};tik();
   }
-  return{speel,klik,flikker};
+  return{speel,klik,flikker,klaar};
 })();
 
 /* ======================================================================
@@ -709,7 +713,7 @@ function startDesk(){
   const grid=$("grid");
   grid.innerHTML=COLL.map((it,i)=>`<button class="tile" data-i="${i}" style="--d:${(Math.random()*1.1).toFixed(2)}s"><span class="ph"><img data-i="${i}" alt="${esc(it.n)}" decoding="async"></span><span class="cap">${esc(it.n)}</span><span class="big" aria-hidden="true"><span class="bp"><img data-i="${i}" alt=""></span><span class="bc"><span>${esc(it.i)}</span><span>${esc(it.n)}</span><span>${esc(it.d)}</span></span></span></button>`).join("");
   const tiles=[...grid.children];
-  loadPacks(()=>{document.querySelectorAll("#ring img[data-i],#grid .ph img[data-i]").forEach(im=>{if(!im.src){const u=fotoOf(+im.dataset.i);if(u)im.src=u}})});
+  const naGeluid=GELUID.klaar.then(()=>0,()=>0);Promise.race([naGeluid,new Promise(r=>setTimeout(r,1500))]).then(()=>loadPacks(()=>{document.querySelectorAll("#ring img[data-i],#grid .ph img[data-i]").forEach(im=>{if(!im.src){const u=fotoOf(+im.dataset.i);if(u)im.src=u}})}));
   grid.addEventListener("pointerover",e=>{const t=e.target.closest(".tile");if(!t)return;if(!t.contains(e.relatedTarget))GELUID.klik();const im=t.querySelector(".big img");if(im&&!im.src&&fotoOf(+im.dataset.i))im.src=fotoOf(+im.dataset.i)});
   grid.addEventListener("click",e=>{const t=e.target.closest(".tile");if(!t)return;openItem(+t.dataset.i)});
   function applyFilter(res){
