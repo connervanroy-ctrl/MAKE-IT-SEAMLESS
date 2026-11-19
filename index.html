@@ -187,7 +187,7 @@ img{display:block}
   </div></section>
 
   <section class="page" id="pGrid" data-k="w" hidden><div class="stage">
-    <div class="balk" aria-label="Druk op de spreekknop op je telefoon"><div class="loop"><span>DRUK OP DE SPREEKKNOP OP JE TELEFOON</span><span aria-hidden="true">DRUK OP DE SPREEKKNOP OP JE TELEFOON</span><span aria-hidden="true">DRUK OP DE SPREEKKNOP OP JE TELEFOON</span><span aria-hidden="true">DRUK OP DE SPREEKKNOP OP JE TELEFOON</span></div></div>
+    <div class="balk" aria-label="Druk op de spreekknop op je telefoon en spreek in wat je wilt zoeken"><div class="loop"><span>DRUK OP DE SPREEKKNOP OP JE TELEFOON EN SPREEK IN WAT JE WILT ZOEKEN</span><span aria-hidden="true">DRUK OP DE SPREEKKNOP OP JE TELEFOON EN SPREEK IN WAT JE WILT ZOEKEN</span><span aria-hidden="true">DRUK OP DE SPREEKKNOP OP JE TELEFOON EN SPREEK IN WAT JE WILT ZOEKEN</span><span aria-hidden="true">DRUK OP DE SPREEKKNOP OP JE TELEFOON EN SPREEK IN WAT JE WILT ZOEKEN</span></div></div>
     <div class="mm desk-mm" data-home>M<i>M</i></div>
     <div class="grid" id="grid"></div>
   </div></section>
@@ -248,7 +248,7 @@ img{display:block}
   <section class="fp dark" id="fLen" hidden>
     <div class="mm ph-mm">M<i>M</i></div>
     <form class="len" id="lenForm" autocomplete="off">
-      <label for="lenIn">Vul je lengte in CM</label>
+      <label for="lenIn">Vul je lengte in cm</label>
       <input id="lenIn" type="text" inputmode="decimal" enterkeyhint="done" maxlength="5">
     </form>
   </section>
@@ -597,7 +597,7 @@ async function buildPDF(it,p){
   pdf.text(`Maten: lengte ${fmt(M.lengte)} cm, armlengte ${fmt(M.arm)} cm, schouderbreedte ${fmt(M.schouder)} cm, borstomtrek ${fmt(M.borst)} cm, heupomtrek ${fmt(M.heup)} cm, beenlengte ${fmt(M.been)} cm.`,15,42,{maxWidth:180});
   pdf.setFont("helvetica","bold");pdf.setFontSize(11);pdf.text("Print op ware grootte",15,56);
   pdf.setFont("helvetica","normal");pdf.setFontSize(9.5);
-  pdf.text("Kies bij het printen '100 %' of 'Werkelijke grootte'. Het vierkant hieronder moet precies 5 x 5 cm zijn.",15,62,{maxWidth:180});
+  pdf.text("Kies bij het printen '100%' of 'Werkelijke grootte'. Het vierkant hieronder moet precies 5 x 5 cm zijn.",15,62,{maxWidth:180});
   pdf.setLineWidth(.4);pdf.rect(15,70,50,50);pdf.setFontSize(9);pdf.text("5 x 5 cm",40,96,{align:"center"});
   pdf.setFont("helvetica","bold");pdf.setFontSize(11);pdf.text("Plak de bladen aan elkaar",80,76);
   pdf.setFont("helvetica","normal");pdf.setFontSize(9.5);
@@ -771,7 +771,7 @@ function startDesk(){
     jas:["arm","schouder","borst","heup"],jurk:["arm","schouder","borst","heup"],top:["arm","schouder","borst"],cape:["schouder","borst"],
     schort:["borst","heup"],kraag:["schouder"],mouw:["arm"],lijf:["borst","heup"],das:["schouder"],doek:["schouder"],klein:["heup"]};
   const LABELS=[
-    {k:"arm",t:"ArmLengte",y:326,side:"L"},
+    {k:"arm",t:"Armlengte",y:326,side:"L"},
     {k:"borst",t:"Borstomtrek",y:526,side:"L"},
     {k:"schouder",t:"Schouderbreedte",y:335,side:"R"},
     {k:"heup",t:"Heupomtrek",y:521,side:"R"},
